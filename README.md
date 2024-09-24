@@ -5,12 +5,12 @@
 #### Installing node
 1. Check if you have node and npm install by running ```node -v``` and ```npm -v```. If both are installed, skip this section.
 2. Download node from https://nodejs.org/en/download. Follow the steps as shown.
-3. Ensure that you have everything downloaded by repeating Step 1
+3. Ensure that you have everything downloaded by repeating Step 1.
 
 #### Starting with React
 1. [Clone the repository](https://github.com/git-guides/git-clone) into a local workspace
 2. Open the repo in an IDE of your choice.
-3. Open a new terminal for the project
+3. Open a new terminal for the project.
 4. Run ```npm install```. You will get many warnings and vulnerabilities. Ignore these. If you get errors, you will have to debug.
 5. Run ```npm run dev```. This will be the command you need to run to start the project most of the time.
 
