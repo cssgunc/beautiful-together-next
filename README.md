@@ -55,5 +55,6 @@ All commands must be run inside your project terminal. For all your tasks, you w
 #### Resources:
 - [ReactJS Tutorial](https://www.youtube.com/watch?v=Tn6-PIqc4UM)
 - [Next.js Documentation](https://nextjs.org/docs) 
-- [Learn Next.js](https://nextjs.org/learn) 
+- [Learn Next.js](https://nextjs.org/learn)
+- [Learn Supabase](https://www.youtube.com/watch?v=dU7GwCOgvNY)
 
