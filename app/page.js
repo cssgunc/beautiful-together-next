@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { createClient } from '@supabase/supabase-js';
 import { useState } from 'react';
+import Setup from './Setup';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -41,6 +42,8 @@ export default function Home() {
           height={70}
           priority
         />
+
+        <Setup/>
         
         <ol>
           Welcome to the Beautiful Together Project Team!
