@@ -41,6 +41,8 @@ export default function Home() {
           height={70}
           priority
         />
+
+        <a href = "/maia">link to maia</a>
         
         <ol>
           Welcome to the Beautiful Together Project Team!
