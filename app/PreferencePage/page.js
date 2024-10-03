@@ -22,22 +22,25 @@ const AccordionItem = ({ title, options }) => {
     return (
         <div className="accordion-item">
             <h3>{title}</h3>
-            <div className="accordion-header" onClick={toggleAccordion}>
+            <div className="accordion-header" id = {isOpen ? "open" : ""} onClick={toggleAccordion}>
                 <span className="selection">{selectedOptions.length > 0 ? selectedOptions.join(', ') : 'Select'}</span>
                 <span className="arrow">{isOpen ? '▼' : '▶'}</span>
             </div>
-            <div className="accordion-content" style={{ maxHeight: isOpen ? '1000px' : '0', overflow: 'hidden' }}>
-                {options.map(option => (
-                    <label key={option}>
-                        <input
-                            type="checkbox"
-                            onChange={() => selectOption(option)}
-                            checked={selectedOptions.includes(option)}
-                        />
-                        {option}
-                    </label>
-                ))}
-            </div>
+   
+                <div className="accordion-content" id = {isOpen ? "open" : ""} style={{ maxHeight: isOpen ? '1000px' : '0', overflow: 'hidden' }}>
+                    {options.map(option => (
+                        <label key={option}>
+                            <input
+                                type="checkbox"
+                                onChange={() => selectOption(option)}
+                                checked={selectedOptions.includes(option)}
+                            />
+                            {option}
+                        </label>
+                    ))}
+                
+                </div>
+            
         </div>
     );
 };
