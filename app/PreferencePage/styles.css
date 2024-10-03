@@ -90,7 +90,7 @@ h1 {
     align-items: center;
 }
 
-.accordion-header.open {
+.accordion-header {
     border-radius: 5px 5px 0 0;
 }
 
