@@ -15,58 +15,20 @@ function toggleAccordion(header) {
     }
 }
 
-function selectOption(checkbox, choice) {
+function selectOption(checkbox) {
     const accordionItem = checkbox.closest('.accordion-item');
     const headerSelection = accordionItem.querySelector('.accordion-header .selection');
     const checkboxes = accordionItem.querySelectorAll('input[type="checkbox"]');
 
     let selectedOptions = [];
 
-    // Get the selected options
+    // Collect selected options
     checkboxes.forEach(cb => {
         if (cb.checked) {
             selectedOptions.push(cb.nextSibling.textContent.trim());
         }
     });
 
-    // Handle "All" or "No Preference" selections
-    if (choice === 'All' || choice === 'No Preference') {
-        checkboxes.forEach(cb => {
-            if (cb !== checkbox) {
-                cb.checked = false; // Deselect others if "All" or "No Preference" is checked
-            }
-        });
-        selectedOptions = [choice]; // Only show "All" or "No Preference"
-    } else {
-        // Deselect "All" or "No Preference" if another option is selected
-        checkboxes.forEach(cb => {
-            if (cb.nextSibling.textContent.trim() === 'All' || cb.nextSibling.textContent.trim() === 'No Preference') {
-                cb.checked = false;
-            }
-        });
-
-
-        // General logic to select "All" when all specific options are selected
-        const specificOptions = Array.from(checkboxes).filter(cb => cb !== checkbox && cb.nextSibling.textContent.trim() !== 'All');
-        const allSelected = specificOptions.every(cb => cb.checked);
-        const allOption = accordionItem.querySelector('input[type="checkbox"][onclick*="All"]');
-
-        if (allSelected && allOption) {
-            specificOptions.forEach(cb => cb.checked = false);
-            allOption.checked = true;
-            specificOptions.forEach(cb => cb.checked = false);
-            selectedOptions = ['All']; // Display only "All" when all are selected
-        } else {
-            // Filter out "All" if it's mistakenly kept in the selection box
-            selectedOptions = selectedOptions.filter(option => option !== 'All');
-        }
-    }
-
-    // Ensure the display is updated correctly
-    if (selectedOptions.includes('All')) {
-        headerSelection.innerText = 'All'; // Only show "All" if selected
-    } else {
-        // Display the selected options
-        headerSelection.innerText = selectedOptions.join(', ') || 'Select'; // Update the selection display
-    }
+    // Display the selected options or 'Select' if none are chosen
+    headerSelection.innerText = selectedOptions.length > 0 ? selectedOptions.join(', ') : 'Select';
 }
