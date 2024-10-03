@@ -11,7 +11,7 @@ body {
 .container {
     display: flex;
     height: 100vh;
-    background-color: #e6e6fa; /* Pastel purple */
+    background-color: #40a824; /* BT Color */
 }
 
 .left-section, .right-section {
@@ -21,10 +21,11 @@ body {
 
 .center-section {
     width: 35%;
-    padding: 0px;
+    padding: 0;
     background-color: #f0f0f0; /* Gray background */
     border-radius: 40px;
     overflow: hidden;
+    overflow-y: auto;
 }
 
 .header {
@@ -32,16 +33,17 @@ body {
     padding: 20px;
     text-align: center; /* Center the text in the header */
     position: relative; /* Set position relative for absolute positioning of child elements */
+    border-bottom: 1px solid #ccc; /* Separate header from the content */
 }
 
 .done-button {
     background: none; /* No background */
     border: none; /* No border */
-    color: #e50909; /* Text color to blend with header */
+    color: #f4900e; /* Text color to blend with header */
     font-size: 18px; /* Adjust font size as needed */
     cursor: pointer; /* Change cursor to pointer */
     position: absolute; /* Position it absolutely within the header */
-    top: 11px; /* Adjust the top position */
+    top: 15px; /* Adjust the top position */
     right: 28px; /* Adjust the right position */
     padding: 0; /* No padding for a clean look */
     text-align: right; /* Align text to the right */
@@ -56,80 +58,71 @@ body {
     outline: none; /* Remove focus outline */
 }
 
-
 h1 {
-    flex-grow: 1; /* Allow title to take available space */
     text-align: center; /* Center title text */
     margin: 0; /* Remove margin for better alignment */
 }
 
 .buttonSection {
-    padding: 20px;
+    padding: 10px 20px; /* Remove top padding */
+    overflow-y: auto; /* Enable scrolling if content overflows */
 }
 
 .accordion {
     width: 100%;
 }
 
-.accordion {
-    position: relative; /* Make the accordion container relative */
-}
-
 .accordion-item {
-    position: relative; /* Make the accordion item relative */
-    margin-bottom: 10px;
-
+    margin-bottom: 10px; /* Space between each accordion item */
 }
 
 .accordion-header {
     background-color: white;
     padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     cursor: pointer;
     border: 1px solid #ccc;
     border-radius: 5px;
+    display: flex; /* Still used flex here to justify arrow and selection */
+    justify-content: space-between;
+    align-items: center;
 }
+
 .accordion-header.open {
     border-radius: 5px 5px 0 0;
 }
 
 .accordion-content {
-    position: absolute; /* Overlay the content */
-    left: 0; /* Align to the left of the accordion item */
-    right: 0; /* Align to the right of the accordion item */
-    top: 100%; /* Position it just below the accordion header */
     max-height: 0; /* Initially hide content */
     overflow: hidden;
     transition: max-height 0.25s ease-out; /* Smooth transition */
     background-color: white; /* Set the background to white for visibility */
     border-radius: 0 0 5px 5px; /* Rounded bottom edges */
-    border: 0px solid #ccc;
     z-index: 100; /* Ensure it appears above other content */
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
+
 .accordion-content.open {
-    max-height: inherit; /* Allow it to expand when the class is added */
-    border: 1px solid #ccc; /* Add border when open */
+    border: 1px solid #ccc;
 }
 
-.accordion-content button {
-    background-color: white; /* White background for the buttons */
-    border: none; /* Remove button border */
-    padding: 12px; /* Padding for buttons */
-    text-align: left; /* Align text to left */
-    width: 100%; /* Full width buttons */
-    cursor: pointer; /* Change cursor to pointer */
+.accordion-content label {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px; /* Padding around each label */
+    cursor: pointer;
 }
 
-.accordion-content button:not(:last-child) {
-    border-bottom: 1px solid #ccc; /* Line between each option except the last one */
+/* Add spacing between checkbox and text */
+.accordion-content label input[type="checkbox"] {
+    margin-right: 10px;
 }
 
-.accordion-content button:hover {
-    background-color: #f0f0f0; /* Slightly darker background on hover */
-}
 
+/* Add a border between each option except the last one */
+.accordion-content label:not(:last-of-type) {
+    border-bottom: 1px solid #ccc;
+}
 
 button {
     width: 100%; /* Full width button */
@@ -145,10 +138,6 @@ button:hover {
     background-color: #e0e0e0; /* Slightly darker on hover */
 }
 
-.arrow {
-    transition: transform 0.2s ease;
-}
-
 button:focus {
     outline: none; /* Remove default focus outline */
 }
@@ -159,13 +148,13 @@ button:active {
 
 button[type="submit"] {
     padding: 20px;
-    margin-top: 155px;
-    background-color: #9494ff;
+    margin-top: 20px;
+    background-color: #f4900e;
     color: white;
     border: none;
     border-radius: 5px;
 }
 
 button[type="submit"]:hover {
-    background-color: #6e6ec0;
+    background-color: #b0680a;
 }
