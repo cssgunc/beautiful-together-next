@@ -90,14 +90,13 @@ h1 {
     align-items: center;
 }
 
-.accordion-header {
+.accordion-header#open {
     border-radius: 5px 5px 0 0;
 }
 
 .accordion-content {
     max-height: 0; /* Initially hide content */
-    overflow: hidden;
-    transition: max-height 0.25s ease-out; /* Smooth transition */
+    transition: max-height 0.1s ease-in;
     background-color: white; /* Set the background to white for visibility */
     border-radius: 0 0 5px 5px; /* Rounded bottom edges */
     z-index: 100; /* Ensure it appears above other content */
@@ -105,9 +104,11 @@ h1 {
     margin-bottom: 0;
 }
 
-.accordion-content.open {
+.accordion-content#open{
     border: 1px solid #ccc;
+   
 }
+
 
 .accordion-content label {
     display: flex;
