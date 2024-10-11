@@ -2,6 +2,14 @@
 import React, { useState } from 'react';
 import './styles.css';
 
+const DummyHeader = () => {
+    return (
+        <div className = "header">
+            <h1>Preferences</h1>
+        </div>
+    );
+};
+
 const AccordionItem = ({ title, options }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -80,26 +88,27 @@ const Preferences = () => {
     };
 
     return (
-        <div className="container">
-            <div className="left-section"></div>
-            <div className="center-section">
-                <div className="header">
-                    <h1>Preferences</h1>
-                    <button className="done-button">Done</button>
+        <div>
+            <DummyHeader/>
+            <div className="container">
+                
+                <div className="left-section"></div>
+                <div className="center-section">
+                    <div className="buttonSection">
+                        <form id="preferencesForm" onSubmit={handleSubmit}>
+                            <div className="accordion">
+                                {preferenceOptions.map(preference => (
+                                    <AccordionItem key={preference.title} title={preference.title} options={preference.options} />
+                                ))}
+                            </div>
+                            <button type="submit">Save</button>
+                        </form>
+                    </div>
                 </div>
-                <div className="buttonSection">
-                    <form id="preferencesForm" onSubmit={handleSubmit}>
-                        <div className="accordion">
-                            {preferenceOptions.map(preference => (
-                                <AccordionItem key={preference.title} title={preference.title} options={preference.options} />
-                            ))}
-                        </div>
-                        <button type="submit">Save</button>
-                    </form>
-                </div>
+                <div className="right-section"></div>
             </div>
-            <div className="right-section"></div>
         </div>
+       
     );
 };
 

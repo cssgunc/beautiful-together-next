@@ -24,20 +24,13 @@ body {
 
 .center-section {
     width: 35%;
-    padding: 0;
+    padding: 10px;
     background-color: #f0f0f0; /* Gray background */
     border-radius: 40px;
     overflow: hidden;
     overflow-y: auto;
     border: 3px solid #40a824;
-}
-
-.header {
-    background-color: white; /* White background for the header */
-    padding: 20px;
-    text-align: center; /* Center the text in the header */
-    position: relative; /* Set position relative for absolute positioning of child elements */
-    border-bottom: 1px solid #ccc; /* Separate header from the content */
+    margin: 20px;
 }
 
 .done-button {
@@ -78,6 +71,7 @@ h1 {
 
 .accordion-item {
     margin-bottom: 10px; /* Space between each accordion item */
+    padding: 10px;
 }
 
 .accordion-header {
@@ -162,4 +156,11 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #b0680a;
+}
+
+.header{
+    height: 80px; 
+    background-color: #40a824;
+    padding: 20px;
+    color: white;
 }
