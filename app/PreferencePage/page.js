@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import './styles.css';
+import Navbar from '../navbar/navbar';
 
 const DummyHeader = () => {
     return (
@@ -89,7 +90,7 @@ const Preferences = () => {
 
     return (
         <div>
-            <DummyHeader/>
+            <Navbar title='Preferences'/>
             <div className="container">
                 
                 <div className="left-section"></div>
