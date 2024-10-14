@@ -53,13 +53,13 @@ for url in dog_links:
     })
 
 # Insert the scraped data into Supabase
+
 def insert_data(data):
     response = supabase.table("Pets").insert(data).execute()
     if response.status_code == 201:
-        print("Data inserted successfully")
+        return True  # Return success status
     else:
-        print(f"Error inserting data: {response.json()}")
-
+        return response.model_dump_json()  # Return error details for failure
 # Insert the collected data
 if scraped_data:
     insert_data(scraped_data)
