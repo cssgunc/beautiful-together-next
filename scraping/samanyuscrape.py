@@ -40,14 +40,4 @@ for url in page_urls:
         breed = feature.get_text(strip=True)
         breeds.append(breed[0])
 
-    # breed = animal_soup.find('i', class_='icon icon-cat ttip').text.strip()
-    # gender = animal_soup.find_all('i', class_='icon icon-male-sign ttip').text.strip()
-    
-    # breeds.append(breed)
-    # genders.append(gender)
-
 print(breeds)
-
-
-
-
