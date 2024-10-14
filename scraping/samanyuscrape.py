@@ -47,6 +47,3 @@ for url in page_urls:
     # genders.append(gender)
 
 print(breeds)
-
-
-
