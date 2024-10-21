@@ -14,6 +14,7 @@ export default function Home() {
   const [petCount, setPetCount] = useState(-1);
   const [petData, setPetData] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Loading Pets...")
   const headers = ['Name', 'Dog/Cat', 'Images', 'Tags'];
   const databaseHeaders = ['name', 'dog/cat', 'images', 'tags'];
 
@@ -33,7 +34,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error pinging Supabase:', error.message);
-      setPetData('Failed to Connect to Supabase.');
+      setErrorMessage('Failed to Connect to Supabase.');
     }
   };
 
@@ -93,7 +94,7 @@ export default function Home() {
         ) : petCount == 0 ? (
           <ol>There are no available animals.</ol>
         ) : (
-          <ol>Loading Pets...</ol>
+          <ol>{errorMessage}</ol>
         )}
         <div className={styles.ctas}>
           {}
