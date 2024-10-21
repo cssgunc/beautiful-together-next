@@ -14,8 +14,8 @@ export default function Home() {
   const [petCount, setPetCount] = useState(-1);
   const [petData, setPetData] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
-  const headers = ['Name', 'Dog/Cat', 'Tags'];
-  const tableHeaders = ['name', 'dog/cat', 'images', 'tags'];
+  const headers = ['Name', 'Dog/Cat', 'Images', 'Tags'];
+  const databaseHeaders = ['name', 'dog/cat', 'images', 'tags'];
 
 
   // ping
@@ -45,7 +45,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        
+
         <Image
             className={styles.logo}
             src="/logo.png"
@@ -70,7 +70,7 @@ export default function Home() {
               <tbody>
                 {petData.map((row, index) => (
                   <tr key={index}>
-                    {tableHeaders.map((field) => (
+                    {databaseHeaders.map((field) => (
                       <td key={field} className="wrap-cell">
                         {field === 'images' && row[field].length > 0 ? (
                           row[field].map((imgUrl) => (
