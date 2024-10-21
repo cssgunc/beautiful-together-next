@@ -11,45 +11,90 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function Home() {
-  const [pingResult, setPingResult] = useState('');
+  const [petCount, setPetCount] = useState(-1);
+  const [petData, setPetData] = useState([]);
+  const [pageLoaded, setPageLoaded] = useState(false);
+  const headers = ['Name', 'Dog/Cat', 'Tags'];
+  const tableHeaders = ['name', 'dog/cat', 'images', 'tags'];
+
 
   // ping
-  const pingSupabase = async () => {
+  async function updatePetData() {
     try {
-      const { data, error } = await supabase
-        .from('test_table') 
-        .select('*')
-        .limit(1);
+      const { count, data, error } = await supabase
+        .from('Available Animals') 
+        .select('*', {count: 'exact'});
 
       if (error) throw error;
-      if (data) setPingResult('Supabase Connected Successfully!');
+      if (data) {
+        console.log(data);
+        setPetCount(count);
+        setPetData(data);
+      }
     } catch (error) {
       console.error('Error pinging Supabase:', error.message);
-      setPingResult('Failed to Connect to Supabase.');
+      setPetData('Failed to Connect to Supabase.');
     }
   };
+
+  if (!pageLoaded) {
+    setPageLoaded(true);
+    updatePetData();
+  }
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-
-      <Image
-          className={styles.logo}
-          src="/logo.png"
-          alt="bt_logo"
-          width={170}
-          height={70}
-          priority
-        />
         
-        <ol>
-          Welcome to the Beautiful Together Project Team!
-        </ol>
-        <ol>
-          Before making edits, make sure to completely read the README.
-        </ol>
-        <button onClick={pingSupabase} className={styles.primary}>Ping Supabase Test</button>
-        {pingResult && <ol>{pingResult}</ol>}
+        <Image
+            className={styles.logo}
+            src="/logo.png"
+            alt="bt_logo"
+            width={170}
+            height={70}
+            priority
+          />
+
+        {petCount > 0 ? (
+          <div>
+          <ol>Total Number of Pets: {petCount}</ol>
+            <table>
+              <thead>
+                <tr>
+                  {headers.map((header) => (
+                    <th key={header}>{header}</th>
+                  ))}
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {petData.map((row, index) => (
+                  <tr key={index}>
+                    {tableHeaders.map((field) => (
+                      <td key={field} className="wrap-cell">
+                        {field === 'images' && row[field].length > 0 ? (
+                          row[field].map((imgUrl) => (
+                            <img src={imgUrl}></img>
+                          ))
+                        ) : field === 'tags' && row[field].length > 0 ? (
+                          Object.entries(row[field]).map(([tag, value]) => (
+                            <p>{tag}: {value}</p>
+                          ))
+                        ) : (
+                          row[field]
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : petCount == 0 ? (
+          <ol>There are no available animals.</ol>
+        ) : (
+          <ol>Loading Pets...</ol>
+        )}
         <div className={styles.ctas}>
           {}
         </div>
