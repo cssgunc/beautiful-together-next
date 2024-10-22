@@ -11,21 +11,11 @@ const DummyHeader = () => {
     );
 };
 
-const AccordionItem = ({ title, options }) => {
+const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState([]);
 
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
-    };
-
-    const selectOption = (option) => {
-        setSelectedOptions(prevSelected => {
-            if (prevSelected.includes(option)) {
-                return prevSelected.filter(item => item !== option);
-            }
-            return [...prevSelected, option];
-        });
     };
 
     return (
@@ -41,7 +31,7 @@ const AccordionItem = ({ title, options }) => {
                         <label key={option}>
                             <input
                                 type="checkbox"
-                                onChange={() => selectOption(option)}
+                                onChange={() => onSelect(option)}
                                 checked={selectedOptions.includes(option)}
                             />
                             {option}
@@ -82,10 +72,30 @@ const Preferences = () => {
         }
     ];
 
+
+    const [selectedOptions, setSelectedOptions] = useState({});
+
+    const handleSelectOption = (title, option) => {
+        setSelectedOptions(prevSelected => {
+            const currentSelection = prevSelected[title] || [];
+            if (currentSelection.includes(option)) {
+                return { ...prevSelected, [title]: currentSelection.filter(item => item !== option) };
+            }
+            return { ...prevSelected, [title]: [...currentSelection, option] };
+        });
+    };
+
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle form submission
-        alert('Preferences saved!');
+        alert('Preferences saved! ' + JSON.stringify(selectedOptions));
+        localStorage.setItem('preferences', JSON.stringify(selectedOptions));
+        //To Get Data in JSON form Use: 
+        //const data = localStorage.getItem('preferences');
+        
+        //May have to initialize or deal with null preferences in the future
     };
 
     return (
@@ -99,7 +109,7 @@ const Preferences = () => {
                         <form id="preferencesForm" onSubmit={handleSubmit}>
                             <div className="accordion">
                                 {preferenceOptions.map(preference => (
-                                    <AccordionItem key={preference.title} title={preference.title} options={preference.options} />
+                                    <AccordionItem key={preference.title} title={preference.title} options={preference.options} selectedOptions={selectedOptions[preference.title] || []} onSelect={(option) => handleSelectOption(preference.title, option)}/>
                                 ))}
                             </div>
                             <button type="submit">Save</button>
