@@ -3,7 +3,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import { createClient } from '@supabase/supabase-js';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchPetData } from "@/fetchPetData/fetchPetData";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -20,6 +21,7 @@ export default function Home() {
 
 
   // ping
+  /*
   async function updatePetData() {
     try {
       const { count, data, error } = await supabase
@@ -37,11 +39,35 @@ export default function Home() {
       setErrorMessage('Failed to Connect to Supabase.');
     }
   };
+  */
 
+  //new function calling the database
+  async function updatePetData(){
+    try {
+      const data = await fetchPetData()
+      if (data){
+        console.log("Data retrived:", data)
+        setPetCount(data.length);
+        setPetData(data);
+      }
+
+    } catch (error) {
+      console.error("Error fetching pet data", error.message);
+      setErrorMessage('Failed to Connect to Supabase.');
+    }
+  }
+
+  /*
   if (!pageLoaded) {
     setPageLoaded(true);
     updatePetData();
   }
+  */
+
+  //rewrote to use useEffect when fetching data
+  useEffect(() => {
+    updatePetData();
+  }, [])
 
   return (
     <div className={styles.page}>
