@@ -29,6 +29,7 @@ import {
   MedicalInformation,
   Checklist,
 } from '@mui/icons-material';
+import Navbar from '../navbar/navbar';
 
 const theme = createTheme({
   palette: {
@@ -157,7 +158,7 @@ const Preferences = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
-        <AppBar position="static">
+        {/* <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Beautiful Together Animal Sanctuary
@@ -169,7 +170,8 @@ const Preferences = () => {
               <Menu />
             </IconButton>
           </Toolbar>
-        </AppBar>
+        </AppBar> */}
+        <Navbar />
         <Container maxWidth="sm" sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>
@@ -205,20 +207,23 @@ const Preferences = () => {
                 ))}
 
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                  <Button 
-                    type="submit" 
-                    variant="contained" 
-                    color="primary"
-                    size="large"
-                    sx={{ 
-                      width: '200px',
-                      borderRadius: '8px',
-                      textTransform: 'none',
-                      fontSize: '1.1rem'
-                    }}
-                  >
+                    <Button 
+                        type="submit" 
+                        variant="contained" 
+                        sx={{ 
+                            width: '200px',
+                            borderRadius: '8px',
+                            textTransform: 'none',
+                            fontSize: '1.1rem',
+                            color: 'white',
+                            bgcolor: '#f4900c', // Set orange background
+                            '&:hover': {
+                            bgcolor: '#d67d0a'  // Slightly darker orange for hover
+                            }
+                        }}
+                    >
                     Save Preferences
-                  </Button>
+                    </Button>
                 </Box>
               </Card>
             </Box>

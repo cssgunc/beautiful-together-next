@@ -25,11 +25,10 @@ body {
 .center-section {
     width: 35%;
     padding: 10px;
-    background-color: #f0f0f0; /* Gray background */
-    border-radius: 40px;
+    background-color: #ffffff; /* White background */
     overflow: hidden;
     overflow-y: auto;
-    border: 3px solid #40a824;
+    border-radius: 40px;
     margin: 20px;
 }
 
@@ -75,7 +74,7 @@ h1 {
 }
 
 .accordion-header {
-    background-color: white;
+    background-color: #f0f0f0;
     padding: 15px;
     cursor: pointer;
     border: 1px solid #ccc;
@@ -92,7 +91,7 @@ h1 {
 .accordion-content {
     max-height: 0; /* Initially hide content */
     transition: max-height 0.1s ease-in;
-    background-color: white; /* Set the background to white for visibility */
+    background-color: #f0f0f0; /* Set the background to white for visibility */
     border-radius: 0 0 5px 5px; /* Rounded bottom edges */
     z-index: 100; /* Ensure it appears above other content */
     padding-bottom: 0;

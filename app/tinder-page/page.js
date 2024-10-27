@@ -13,6 +13,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Favorite, Menu } from '@mui/icons-material';
 import PetCard from './PetCard';
 import { petsData } from './petsData';
+import Navbar from '../navbar/navbar';
 
 const theme = createTheme({
   palette: {
@@ -32,7 +33,7 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
-        <AppBar position="static">
+        {/* <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Beautiful Together Animal Sanctuary
@@ -44,7 +45,8 @@ export default function Home() {
               <Menu />
             </IconButton>
           </Toolbar>
-        </AppBar>
+        </AppBar> */}
+        <Navbar />
         <Container maxWidth="sm" sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>

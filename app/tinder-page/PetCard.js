@@ -79,7 +79,14 @@ const PetCard = ({ pet }) => (
       <Button variant="contained" color="secondary" startIcon={<Close />}>
         Pass
       </Button>
-      <Button variant="contained" color="primary" endIcon={<Favorite />}>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        endIcon={<Favorite sx={{ color: 'white' }} />} // Add white color to icon
+        sx={{ 
+          color: 'white' // Add white color to text
+        }}
+      >
         Adopt
       </Button>
     </Box>
