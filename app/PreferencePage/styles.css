@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    --background: #ffffff;
+    --foreground: #171717;
+    color-scheme: light;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    background-color: #f0f0f0; /* BT Color */
+}
+
+.left-section, .right-section {
+    width: 32.5%;
+    background-color: transparent;
+}
+
+.center-section {
+    width: 35%;
+    padding: 10px;
+    background-color: #f0f0f0; /* Gray background */
+    border-radius: 40px;
+    overflow: hidden;
+    overflow-y: auto;
+    border: 3px solid #40a824;
+    margin: 20px;
+}
+
+.done-button {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: #f4900e; /* Text color to blend with header */
+    font-size: 18px; /* Adjust font size as needed */
+    cursor: pointer; /* Change cursor to pointer */
+    position: absolute; /* Position it absolutely within the header */
+    top: 15px; /* Adjust the top position */
+    right: 28px; /* Adjust the right position */
+    padding: 0; /* No padding for a clean look */
+    text-align: right; /* Align text to the right */
+}
+
+.done-button:hover {
+    background: none; /* No change on hover */
+    color: #e50909; /* Keep the same text color */
+}
+
+.done-button:focus {
+    outline: none; /* Remove focus outline */
+}
+
+h1 {
+    text-align: center; /* Center title text */
+    margin: 0; /* Remove margin for better alignment */
+}
+
+.buttonSection {
+    padding: 10px 20px; /* Remove top padding */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.accordion {
+    width: 100%;
+}
+
+.accordion-item {
+    margin-bottom: 10px; /* Space between each accordion item */
+    padding: 10px;
+}
+
+.accordion-header {
+    background-color: white;
+    padding: 15px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex; /* Still used flex here to justify arrow and selection */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion-header#open {
+    border-radius: 5px 5px 0 0;
+}
+
+.accordion-content {
+    max-height: 0; /* Initially hide content */
+    transition: max-height 0.1s ease-in;
+    background-color: white; /* Set the background to white for visibility */
+    border-radius: 0 0 5px 5px; /* Rounded bottom edges */
+    z-index: 100; /* Ensure it appears above other content */
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.accordion-content#open{
+    border: 1px solid #ccc;
+   
+}
+
+
+.accordion-content label {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px; /* Padding around each label */
+    cursor: pointer;
+}
+
+/* Add spacing between checkbox and text */
+.accordion-content label input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+
+/* Add a border between each option except the last one */
+.accordion-content label:not(:last-of-type) {
+    border-bottom: 1px solid #ccc;
+}
+
+button {
+    width: 100%; /* Full width button */
+    padding: 15px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    text-align: center; /* Align text to center */
+    cursor: pointer;
+    margin: 5px 0; /* Margin for spacing */
+}
+
+button:hover {
+    background-color: #e0e0e0; /* Slightly darker on hover */
+}
+
+button:focus {
+    outline: none; /* Remove default focus outline */
+}
+
+button:active {
+    background-color: #d0d0d0; /* Darker on click */
+}
+
+button[type="submit"] {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #f4900e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button[type="submit"]:hover {
+    background-color: #b0680a;
+}
+
+.header{
+    height: 80px; 
+    background-color: #40a824;
+    padding: 20px;
+    color: white;
+}
