@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { createClient } from '@supabase/supabase-js';
 import { useState } from 'react';
+import FetchAnimalsDataTest from "./fetchAnimalsData/FetchAnimalsDataTest";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -53,6 +54,8 @@ export default function Home() {
         <div className={styles.ctas}>
           {}
         </div>
+        
+        {/* <FetchAnimalsDataTest/>  <--- was used for testing */}
       </main>
       <footer className={styles.footer}>
         {}
