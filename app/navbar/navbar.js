@@ -34,7 +34,7 @@ const Navbar = ({ title }) => {
   const menuItems = [
     { text: 'Search Pets', icon: <Pets />, href: '/tinder-page' },
     { text: 'Preferences', icon: <Settings />, href: '/PreferencePage' },
-    { text: 'Saved Pets', icon: <BookmarkBorder />, href: '' },
+    { text: 'Saved Pets', icon: <BookmarkBorder />, href: '/SavedPets' },
   ];
 
   return (
