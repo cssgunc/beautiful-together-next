@@ -1,14 +1,29 @@
-import { cache } from 'react';
-import { createClient } from "@supabase/supabase-js";
+const cacheName = "pets-cache"
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+export const fetchPetData = async () => {
+    const cache = await caches.open(cacheName)
+    
+    //dummy data
+    const cachedResponse = await cache.match("https://dummyjson.com/products");
 
-export const fetchPetData = cache(async () => {
-    const {data, error} = await supabase
-    .from('Available Animals')
-    .select('*');
-
-    if (error) throw new Error ('Error fetching pets: ' + error.message);
-    return data
-});
+    if (cachedResponse){
+        // if data is cached, return it 
+        console.log("Returning data from cache")
+        const data = await cachedResponse.json();
+        return data;
+    } else {
+        //if not, fetch from API (dummy data)
+        console.log("Fetching data from network")
+        const res = await fetch("https://dummyjson.com/products")
+        const data = await res.json()
+        
+        //add response to cache
+        await cache.put(
+            "https://dummyjson.com/products",
+            new Response(JSON.stringify(data))
+        )
+        
+        return data
+    }
+}
 
