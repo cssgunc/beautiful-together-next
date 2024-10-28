@@ -82,6 +82,12 @@ for cat in cats:
     # dog['images'] = values_dict[dog['name']]
     cat['type'] = animal_type
 
+# Before insertion, delete existing 'cat' entries
+def clear_cats_from_supabase():
+    response = supabase.table('Available Animals').delete().eq('"dog/cat"', 'cat').execute()
+
+clear_cats_from_supabase()
+
 # Insert into supabase
 for cat in cats:
     supabase.table('Available Animals').insert({

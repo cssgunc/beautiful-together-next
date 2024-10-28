@@ -78,17 +78,25 @@ for dog in dogs:
     animal_type = 'dog' if 'dog' in dog['link'].lower() else 'cat'
     # Store the data in the dog's dictionary
     dog['tags'] = tags
+
     # dog['images'] = values_dict[dog['name']]
+    
     dog['type'] = animal_type
 
+# Before insertion, delete existing 'dog' entries
+def clear_dogs_from_supabase():
+    response = supabase.table('Available Animals').delete().eq('"dog/cat"', 'dog').execute()
+
+clear_dogs_from_supabase()
+
 # Insert into supabase
-# for dog in dogs:
-#     supabase.table('Available Animals').insert({
-#         'name': dog['name'],
-#         'tags': dog['tags'],
-#         # 'images': dog['images'],
-#         'dog/cat': dog['type']
-#     }).execute()
+for dog in dogs:
+    supabase.table('Available Animals').insert({
+        'name': dog['name'],
+        'tags': dog['tags'],
+        # 'images': dog['images'],
+        'dog/cat': dog['type']
+    }).execute()
 
 pprint.pprint(dogs)
 
