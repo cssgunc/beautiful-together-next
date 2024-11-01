@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import fetchAnimalsData from './fetchAnimalsData';
-
 
 const FetchAnimalsDataTest = () => {
     const [data, setData] = useState(null);
@@ -11,16 +9,20 @@ const FetchAnimalsDataTest = () => {
         fetchData();
     }, []);
 
-    const fetchData = async () => {
+    async function fetchData() {
         try {
-            const fetchedData = await fetchAnimalsData();
-            setData(fetchedData);
-            setLoading(false);
+            const response = await fetch('/api/animals');
+            if (!response.ok) {
+                throw new Error('Failed to fetch animals data');
+            }
+            const data = await response.json();
+            setData(data);  
+            setLoading(false);  
         } catch (error) {
             setError(error.message);
-            setLoading(false);
+            setLoading(false);  
         }
-    };
+    }
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
