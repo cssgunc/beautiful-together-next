@@ -4,7 +4,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { createClient } from '@supabase/supabase-js';
 import { useState, useEffect } from 'react';
-import { fetchPetData } from "@/fetchPetData/fetchPetData";
+import { fetchPetData } from "@/app/fetchPetData/fetchPetData";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -47,6 +47,7 @@ export default function Home() {
       const data = await fetchPetData()
       if (data){
         console.log("Data retrived:", data)
+        console.log("length: ", data.length)
         setPetCount(data.length);
         setPetData(data);
       }
@@ -99,11 +100,11 @@ export default function Home() {
                   <tr key={index}>
                     {databaseHeaders.map((field) => (
                       <td key={field} className="wrap-cell">
-                        {field === 'images' && row[field].length > 0 ? (
+                        {field === 'images' && row[field] && row[field].length > 0 ? (
                           row[field].map((imgUrl) => (
                             <img src={imgUrl}></img>
                           ))
-                        ) : field === 'tags' && row[field].length > 0 ? (
+                        ) : field === 'tags' && row[field] ? (
                           Object.entries(row[field]).map(([tag, value]) => (
                             <p>{tag}: {value}</p>
                           ))
@@ -125,6 +126,8 @@ export default function Home() {
         <div className={styles.ctas}>
           {}
         </div>
+        
+        {/*<FetchAnimalsDataTest/>  /*<--- was used for testing */}
       </main>
       <footer className={styles.footer}>
         {}

@@ -4,7 +4,7 @@ export const fetchPetData = async () => {
     const cache = await caches.open(cacheName)
     
     //dummy data
-    const cachedResponse = await cache.match("https://dummyjson.com/products");
+    const cachedResponse = await cache.match("../api/animals");
 
     if (cachedResponse){
         // if data is cached, return it 
@@ -14,12 +14,12 @@ export const fetchPetData = async () => {
     } else {
         //if not, fetch from API (dummy data)
         console.log("Fetching data from network")
-        const res = await fetch("https://dummyjson.com/products")
+        const res = await fetch("../api/animals")
         const data = await res.json()
         
         //add response to cache
         await cache.put(
-            "https://dummyjson.com/products",
+            "../api/animals",
             new Response(JSON.stringify(data))
         )
         
