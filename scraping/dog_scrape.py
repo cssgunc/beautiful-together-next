@@ -12,23 +12,22 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Fetch the main webpage
-url = "https://beautifultogethersanctuary.com/available-cats/"
+url = "https://beautifultogethersanctuary.com/available-dogs/"
 response = requests.get(url)
 soup = BeautifulSoup(response.text, 'html.parser')
 
-# Extract cat page links
-cats = []
+# Extract dog page links
+dogs = []
 for tag in soup.find_all('div', class_='col-12 Bzl-dog-heading heading-equal'):
     name = tag.get_text(strip=True)
     clean_name = re.sub(r'Litter:.*', '', name).strip()
-    clean_name = re.sub(r'Bonded.*', '', clean_name).strip()
     
     link_tag = tag.find('a', href=True, title=True)
     if link_tag:
         link = link_tag['href']
-    cats.append({'name': clean_name, 'link': link})
+    dogs.append({'name': clean_name, 'link': link})
 
-# Function to scrape tags from each cat page - from Ryan
+# Function to scrape tags from each dog page - from Ryan
 def get_tags(url) -> dict[str, str]:
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -71,20 +70,21 @@ def get_tags(url) -> dict[str, str]:
 # for i in range(len(name_list)):
 #     values_dict[name_list[i]] = img_list[i+1]
 
-# Store fields for each cat
-for cat in cats:
-    # Scrape tags from individual cat page
-    tags = get_tags(cat['link'])
+# Store fields for each dog
+for dog in dogs:
+    # Scrape tags from individual dog page
+    tags = get_tags(dog['link'])
     # Determine if it is a dog or cat based on the URL
-    animal_type = 'dog' if 'dog' in cat['link'].lower() else 'cat'
-    # Store the data in the cat's dictionary
-    cat['tags'] = tags
-    # cat['images'] = values_dict[cat['name']]
-    cat['type'] = animal_type
+    animal_type = 'dog' if 'dog' in dog['link'].lower() else 'cat'
+    # Store the data in the dog's dictionary
+    dog['tags'] = tags
+
+    # dog['images'] = values_dict[dog['name']]    
+    dog['type'] = animal_type
 
 # Fetch existing records from Supabase
 def fetch_existing_animals():
-    response = supabase.table('Available Animals').select('*').eq('"dog/cat"', 'cat').execute()
+    response = supabase.table('Available Animals').select('*').eq('"dog/cat"', 'dog').execute()
     if response.data:
         # Use link as the unique key
         return {item['link']: item for item in response.data}
@@ -98,16 +98,16 @@ def update_database_with_scraped_data(animals):
     existing_links = set(existing_animals.keys())
 
     # Identify animals for insertion and updating
-    for cat in cats:
-        link = cat['link']
+    for dog in dogs:
+        link = dog['link']
         if link in existing_links:
             # Check if the data has changed
             existing_animal = existing_animals[link]
-            if cat['tags'] != existing_animal.get('tags'):
-                animals_to_update.append(cat)
+            if dog['tags'] != existing_animal.get('tags'):
+                animals_to_update.append(dog)
             existing_links.remove(link)
         else:
-            animals_to_insert.append(cat)
+            animals_to_insert.append(dog)
 
     # Animals remaining in existing_links are to be deleted
     animals_to_delete = list(existing_links)
@@ -137,24 +137,21 @@ def update_database_with_scraped_data(animals):
     pprint.pprint(animals_to_update)
 
 # Run the update
-update_database_with_scraped_data(cats)
+update_database_with_scraped_data(dogs)
 
-# # Before insertion, delete existing 'cat' entries
-# def clear_cats_from_supabase():
-#     response = supabase.table('Available Animals').delete().eq('"dog/cat"', 'cat').execute()
+# # Before insertion, delete existing 'dog' entries
+# def clear_dogs_from_supabase():
+#     response = supabase.table('Available Animals').delete().eq('"dog/cat"', 'dog').execute()
 
-# clear_cats_from_supabase()
+# clear_dogs_from_supabase()
 
-# # Insert into supabase
-# for cat in cats:
+# Insert into supabase
+# for dog in dogs:
 #     supabase.table('Available Animals').insert({
-#         'name': cat['name'],
-#         'tags': cat['tags'],
-#         # 'images': cat['images'],
-#         'dog/cat': cat['type'],
-#         'link': cat['link']
+#         'name': dog['name'],
+#         'tags': dog['tags'],
+#         # 'images': dog['images'],
+#         'dog/cat': dog['type'],
+#         'link': dog['link']
 #     }).execute()
-
-# pprint.pprint(cats)
-
 
