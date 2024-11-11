@@ -4,8 +4,7 @@ const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
 const setCookieData = (data) => {
     try {
-        // Take first 20 animals instead of 10
-        const limitedData = Array.isArray(data) ? data.slice(0, 20) : data;
+        const limitedData = Array.isArray(data) ? data.slice(0, 10) : data;
         
         // Simplify the data structure to reduce size
         const simplifiedData = limitedData.map(animal => ({
