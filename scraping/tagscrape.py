@@ -1,9 +1,11 @@
+# skeleton code from nicholasscrape.py
 import requests
 from bs4 import BeautifulSoup
 
-# Fetch the webpage
+# What if data of dogs changes?
 
 def get_tags(url) -> dict[str, str]:
+    # Fetch the webpage
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     # dict to store tags
@@ -17,6 +19,19 @@ def get_tags(url) -> dict[str, str]:
         label = tag.get_text(strip=True)
         labels[header] = label
 
-    return labels
+def get_images(url) -> list[str]:
+    # Fetch the webpage
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    # initialize list of image links
+    images: list[str] = []
+    # find all images on webpage
+    for image_link in soup.find_all('a', class_='dogPics'):
+        # getting each of the links from the profile page
+        link = image_link.get("href")
+        # adding the link to the output list
+        images.append(link)
 
-print(get_tags(url = "https://beautifultogethersanctuary.com/dog/bear-5/"))
+    return images
+
+print(get_tags_and_images(url = "https://beautifultogethersanctuary.com/dog/bella-9/"))
