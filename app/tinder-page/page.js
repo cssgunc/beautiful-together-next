@@ -8,6 +8,7 @@ import {
   Box, 
   IconButton,
   Container,
+  Card
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Favorite, Menu } from '@mui/icons-material';
@@ -33,9 +34,11 @@ const theme = createTheme({
 
 
 export default function Home() {
-  const [petCount, setPetCount] = useState(-1);
+  const [currentIndex, setCurrentIndex] = useState(0)
   const [petData, setPetData] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [savedPet, setSavedPet] = useState(false)
+  const [savedPetName, setSavedPetName] = useState('')
 
   useEffect(() => {
     updatePetData();
@@ -46,8 +49,7 @@ export default function Home() {
       const data = await fetchPetData()
       if (data){
         console.log("Data retrived:", data)
-        setPetData(data);
-        setPetCount(data.length);
+        setPetData(data)
         setPageLoaded(true)
         
       }
@@ -58,6 +60,17 @@ export default function Home() {
     }
   }
 
+  const pass = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % petData.length); 
+    
+  }
+
+  const adopt = () => {
+    setSavedPet(true)
+    setSavedPetName(petData[currentIndex].name)
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % petData.length); 
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
@@ -66,11 +79,19 @@ export default function Home() {
         <Container maxWidth="sm" sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>
-              <PetCard pet={petData[0]} />
+                  <PetCard pet={petData[currentIndex]} pass={pass} adopt={adopt} />
+                  {savedPet && 
+                       <div>
+                          {savedPetName} was saved to your liked pets.
+                       </div>
+                        
+                          
+        }
             </Box>
           </Box>
         </Container>
         }
+        
       </Box>
     </ThemeProvider>
   );
