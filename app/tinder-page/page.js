@@ -17,6 +17,8 @@ import { petsData, petsData2} from './petsData';
 import { fetchPetData } from '../fetchPetData/fetchPetData';
 import Navbar from '../navbar/navbar';
 import { useEffect, useState } from 'react';
+import Notification from './Notification';
+
 
 const theme = createTheme({
   palette: {
@@ -33,12 +35,15 @@ const theme = createTheme({
 });
 
 
+
+
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [petData, setPetData] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
   const [savedPet, setSavedPet] = useState(false)
   const [savedPetName, setSavedPetName] = useState('')
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     updatePetData();
@@ -69,7 +74,19 @@ export default function Home() {
     setSavedPet(true)
     setSavedPetName(petData[currentIndex].name)
     setCurrentIndex((prevIndex) => (prevIndex + 1) % petData.length); 
+    addNotification(petData[currentIndex].name)
   }
+
+  const addNotification = (name) => {
+    const id = Date.now();
+    setNotifications((prev) => [...prev, {id, name}])
+    console.log(notifications)
+  }
+
+  const removeNotification = (id) => {
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+  };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -80,13 +97,14 @@ export default function Home() {
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>
                   <PetCard pet={petData[currentIndex]} pass={pass} adopt={adopt} />
-                  {savedPet && 
-                       <div>
-                          {savedPetName} was saved to your liked pets.
-                       </div>
-                        
-                          
-        }
+                  <Box sx={{ bottom: 20, right: 20, zIndex: 1000 }}>
+                    {
+                      notifications.map((n) => (
+                        <Notification key = {n.id} name = {n.name} onClose = {() => removeNotification(n.id)}/>
+                      )
+                      )
+                    } 
+                  </Box>         
             </Box>
           </Box>
         </Container>
