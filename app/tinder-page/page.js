@@ -12,8 +12,10 @@ import {
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Favorite, Menu } from '@mui/icons-material';
 import PetCard from './PetCard';
-import { petsData } from './petsData';
+import { petsData, petsData2} from './petsData';
+import { fetchPetData } from '../fetchPetData/fetchPetData';
 import Navbar from '../navbar/navbar';
+import { useEffect, useState } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -29,31 +31,46 @@ const theme = createTheme({
   },
 });
 
+
 export default function Home() {
+  const [petCount, setPetCount] = useState(-1);
+  const [petData, setPetData] = useState([]);
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    updatePetData();
+  }, [])
+  
+  async function updatePetData(){
+    try {
+      const data = await fetchPetData()
+      if (data){
+        console.log("Data retrived:", data)
+        setPetData(data);
+        setPetCount(data.length);
+        setPageLoaded(true)
+        
+      }
+  
+    } catch (error) {
+      console.error("Error fetching pet data", error.message);
+      setErrorMessage('Failed to Connect to Supabase.');
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
-        {/* <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Beautiful Together Animal Sanctuary
-            </Typography>
-            <IconButton color="inherit">
-              <Favorite />
-            </IconButton>
-            <IconButton color="inherit">
-              <Menu />
-            </IconButton>
-          </Toolbar>
-        </AppBar> */}
         <Navbar />
+        {pageLoaded && 
         <Container maxWidth="sm" sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>
-              <PetCard pet={petsData[0]} />
+              <PetCard pet={petData[0]} />
             </Box>
           </Box>
         </Container>
+        }
       </Box>
     </ThemeProvider>
   );

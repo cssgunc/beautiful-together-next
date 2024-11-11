@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Card, 
@@ -9,10 +7,11 @@ import {
   Grid, 
   Box, 
   Chip,
-  Typography
+  Typography,
 } from '@mui/material';
-import { Favorite, Close, Male, Cake, Scale, Palette, ChildCare, Pets } from '@mui/icons-material';
+import { Favorite, Close, Male, Cake, Scale, Palette, ChildCare, Pets, Battery0Bar, LocationOn, School} from '@mui/icons-material';
 
+/*
 const iconMap = {
   Pets,
   Male,
@@ -20,6 +19,19 @@ const iconMap = {
   Scale,
   Palette,
   ChildCare,
+};
+*/
+
+const iconMap = {
+  "Age" : Cake,
+  "Breed" : Pets,
+  "Color" : Palette,
+  "Energy Level" : Battery0Bar,
+  "Gender" : Male,
+  "Litterbox Trained?" : School,
+  "State" : LocationOn,
+  "Weight": Scale,
+  "Good With Cats?": Pets,
 };
 
 const PetCard = ({ pet }) => (
@@ -53,13 +65,13 @@ const PetCard = ({ pet }) => (
     </Box>
     <CardContent>
       <Grid container spacing={1} sx={{ mb: 2 }}>
-        {pet.traits.map((trait, index) => {
-          const IconComponent = iconMap[trait.icon];
+        {Object.entries(pet.tags).map(([key, value]) => {
+          const IconComponent = iconMap[key];
           return (
-            <Grid item key={index}>
+            <Grid item key={key}>
               <Chip 
                 icon={<IconComponent style={{ color: '#f4900c' }} />} 
-                label={trait.text} 
+                label={value} 
                 size="small"
                 sx={{
                   '& .MuiChip-icon': {
