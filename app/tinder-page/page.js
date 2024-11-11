@@ -18,6 +18,7 @@ import { fetchPetData } from '../fetchPetData/fetchPetData';
 import Navbar from '../navbar/navbar';
 import { useEffect, useState } from 'react';
 import Notification from './Notification';
+import { saveAnimal } from '../savedPetsCookie/savedPetsCookie';
 
 
 const theme = createTheme({
@@ -41,8 +42,6 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [petData, setPetData] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
-  const [savedPet, setSavedPet] = useState(false)
-  const [savedPetName, setSavedPetName] = useState('')
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
@@ -53,7 +52,6 @@ export default function Home() {
     try {
       const data = await fetchPetData()
       if (data){
-        console.log("Data retrived:", data)
         setPetData(data)
         setPageLoaded(true)
         
@@ -67,20 +65,17 @@ export default function Home() {
 
   const pass = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % petData.length); 
-    
   }
 
   const adopt = () => {
-    setSavedPet(true)
-    setSavedPetName(petData[currentIndex].name)
     setCurrentIndex((prevIndex) => (prevIndex + 1) % petData.length); 
     addNotification(petData[currentIndex].name)
+    saveAnimal(petData[currentIndex].id)
   }
 
   const addNotification = (name) => {
     const id = Date.now();
     setNotifications((prev) => [...prev, {id, name}])
-    console.log(notifications)
   }
 
   const removeNotification = (id) => {

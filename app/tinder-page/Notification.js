@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 
 const Notification = ({name, onClose}) => {
-    console.log("Name:", name)
-
     useEffect(() => {
         const timer = setTimeout(onClose, 3000); 
         return () => clearTimeout(timer); 
