@@ -31,6 +31,8 @@ export default function SavedPetsPage() {
   const [pets] = useState({
     bear: {
       name: "Bear",
+      species: "dog",
+      link: "https://beautifultogethersanctuary.com/dog/bear/",
       years: "7",
       breed: "Hound & Mix",
       sex: "Male",
@@ -51,6 +53,8 @@ export default function SavedPetsPage() {
     },
     acorn: {
       name: "Acorn",
+      species: "cat",
+      link: "https://beautifultogethersanctuary.com/kitty/acorn/",
       years: "< 1",
       breed: "Domestic Short Hair",
       sex: "Male",
