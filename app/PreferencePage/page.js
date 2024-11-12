@@ -3,14 +3,6 @@ import React, { useState } from 'react';
 import './styles.css';
 import Navbar from '../navbar/navbar';
 
-const DummyHeader = () => {
-    return (
-        <div className = "header">
-            <h1>Preferences</h1>
-        </div>
-    );
-};
-
 const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -90,11 +82,13 @@ const Preferences = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle form submission
-        alert('Preferences saved! ' + JSON.stringify(selectedOptions));
+        //alert('Preferences saved! ' + JSON.stringify(selectedOptions));
         localStorage.setItem('preferences', JSON.stringify(selectedOptions));
         //To Get Data in JSON form Use: 
-        //const data = localStorage.getItem('preferences');
-        
+        const data = localStorage.getItem('preferences');
+        alert(data);
+        const parseData = JSON.parse(data);
+        alert(parseData.Age);
         //May have to initialize or deal with null preferences in the future
     };
 
