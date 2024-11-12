@@ -87,8 +87,15 @@ const Preferences = () => {
         //To Get Data in JSON form Use: 
         const data = localStorage.getItem('preferences');
         alert(data);
+        
         const parseData = JSON.parse(data);
-        alert(parseData.Age);
+        // If 'Age' has any selected options, join them into a comma-separated string
+        const ageText = parseData.Age ? parseData.Age.join(', ') : 'No Age selected';
+        alert(ageText);
+
+        const goodWithText = parseData["Good With Pets?"] ? parseData["Good With Pets?"].join(', ') : 'No pets selected';
+        alert(goodWithText);
+
         //May have to initialize or deal with null preferences in the future
     };
 
