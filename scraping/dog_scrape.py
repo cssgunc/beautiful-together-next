@@ -3,10 +3,13 @@ from bs4 import BeautifulSoup
 from supabase import create_client, Client
 import re
 import pprint
+import os
+from dotenv import load_dotenv
 
 # Supabase credentials
-SUPABASE_URL = "https://bdcvlsgmanecdortkjcu.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkY3Zsc2dtYW5lY2RvcnRramN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4ODIxNzIsImV4cCI6MjA0MjQ1ODE3Mn0.mVnJfs6UA-cPvRTTie8XmPmhCSNmfK5PtzgZ9Zhy9Ss"
+load_dotenv()
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -27,76 +30,66 @@ for tag in soup.find_all('div', class_='col-12 Bzl-dog-heading heading-equal'):
         link = link_tag['href']
     dogs.append({'name': clean_name, 'link': link})
 
-# Function to scrape tags from each dog page
+# Function to scrape tags from each dog page - from Ryan
 def get_tags(url) -> dict[str, str]:
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
+    # dict to store tags
     labels = {}
     
     # Extract list of tags
     for tag in soup.find_all('li', class_='features_item'):
+        # getting the type of tag
         header = tag.find("i")['title']
+        # getting the value of the tag
         label = tag.get_text(strip=True)
         labels[header] = label
 
     return labels
 
-# Add unwanted images (including \u202f) to the exclusion list
-unwanted_images = [
-    'buzz-rescue-mark.png',
-    'amazon-wishlist.jpg',
-    'Vet-Naturals-1.png',
-    'btogether-new-sanctuary-286x116-1.png'
-]
+# Scrape and store images in a list
+# url = "https://beautifultogethersanctuary.com/available-cats/"
+# html_text = requests.get(url)
 
-def is_allowed_image(img_url):
-    # Check if the image URL contains any unwanted characters
-    if '\u202f' in img_url:
-        return False
-    for unwanted in unwanted_images:
-        if unwanted in img_url:
-            return False
-    return True
+# soup = BeautifulSoup(html_text.content, 'html.parser')
 
-# Scrape images for each dog page
-def get_images(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    img_list = []
-    
-    # Find all images for the dog on its page
-    for img in soup.find_all('img', src=True):
-        img_url = img['src']
-        
-        # If the image is base64, skip it
-        if img_url.startswith('data:'):
-            continue
-        
-        # If the image starts with '/', it's relative, so append the base URL
-        if img_url.startswith('/'):
-            img_url = url + img_url
-        
-        # Check if the image is allowed
-        if is_allowed_image(img_url):
-            img_list.append(img_url)
-    
-    return img_list
+# images = soup.find_all('img')
 
-# Store fields for each dog and fetch their images
+# div_titles = soup.find_all('div', {"class" : "col-12 Bzl-dog-heading heading-equal"})
+# name_list = []
+# for div_title in div_titles:
+#     title = div_title.find('a')
+#     name_list.append(title.get('title'))
+# img_list = []
+# for img in images:
+#     img_url = img.get("data-src")
+#     if img_url and not img_url.startswith('data:'):
+#         if img_url.startswith('/'):
+#             img_url += url
+#     if(img_url != None):
+#         img_list.append(img_url)
+
+# values_dict = {}
+# for i in range(len(name_list)):
+#     values_dict[name_list[i]] = img_list[i+1]
+
+# Store fields for each dog
 for dog in dogs:
-    # Scrape tags and images from individual dog page
+    # Scrape tags from individual dog page
     tags = get_tags(dog['link'])
-    images = get_images(dog['link'])
-    
+    # Determine if it is a dog or cat based on the URL
     animal_type = 'dog' if 'dog' in dog['link'].lower() else 'cat'
+    # Store the data in the dog's dictionary
     dog['tags'] = tags
-    dog['images'] = images
+
+    # dog['images'] = values_dict[dog['name']]    
     dog['type'] = animal_type
 
 # Fetch existing records from Supabase
 def fetch_existing_animals():
     response = supabase.table('Available Animals').select('*').eq('"dog/cat"', 'dog').execute()
     if response.data:
+        # Use link as the unique key
         return {item['link']: item for item in response.data}
     return {}
 
@@ -128,14 +121,14 @@ def update_database_with_scraped_data(animals):
             'name': animal['name'],
             'tags': animal['tags'],
             'link': animal['link'],
-            'images': animal['images'],  # Insert filtered images
+            # 'images': animal['images'],
             'dog/cat': animal['type']
         }).execute()
 
     for animal in animals_to_update:
         supabase.table('Available Animals').update({
             'tags': animal['tags'],
-            'images': animal['images'],  # Update images
+            # 'images': animal['images'],
             'dog/cat': animal['type']
         }).eq('link', animal['link']).execute()
 
@@ -148,3 +141,20 @@ def update_database_with_scraped_data(animals):
 
 # Run the update
 update_database_with_scraped_data(dogs)
+
+# # Before insertion, delete existing 'dog' entries
+# def clear_dogs_from_supabase():
+#     response = supabase.table('Available Animals').delete().eq('"dog/cat"', 'dog').execute()
+
+# clear_dogs_from_supabase()
+
+# Insert into supabase
+# for dog in dogs:
+#     supabase.table('Available Animals').insert({
+#         'name': dog['name'],
+#         'tags': dog['tags'],
+#         # 'images': dog['images'],
+#         'dog/cat': dog['type'],
+#         'link': dog['link']
+#     }).execute()
+
