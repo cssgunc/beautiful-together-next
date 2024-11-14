@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { fetchPetData } from "./utils/fetchPetData";
 
 const COOKIE_NAME = "pets-data";
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
@@ -7,10 +8,10 @@ export async function middleware(request) {
   // Initiate Response
   const response = NextResponse.next();
 
-  // Get the 'pet-data' cookie from the request
+  // Get the 'pets-data' cookie from the request
   const petDataCookie = request.cookies.get(COOKIE_NAME);
 
-  // If there's no pet-data cookie or it needs a refresh, fetch data
+  // If there's no pets-data cookie or it needs a refresh, fetch data
   if (!petDataCookie || needsRefresh(petDataCookie)) {
     try {
       // Call the API to get pet data
@@ -22,13 +23,16 @@ export async function middleware(request) {
         credentials: "same-origin",
       });
       const data = await apiResponse.json();
+      console.log("Is Array: " + Array.isArray(data));
       const newData = data.slice(0, 5);
+
+      console.log(newData);
 
       // Create the cookie value with only the first 10 objects
       const cookieValue = {
         data: newData,
         timestamp: Date.now(),
-        totalCount: data.length, // Store the total count, not just the limited data
+        totalCount: data.length,
       };
 
       const cookieSize = new TextEncoder().encode(
