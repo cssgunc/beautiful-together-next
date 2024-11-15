@@ -19,7 +19,7 @@ const LikedCat = ({ cat }) => {
           <Stack spacing={2}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PetsOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{cat.tags.breed}</Typography>
+              <Typography variant="body2">{cat.tags.Breed}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {cat.sex === "Male" ? (
@@ -27,11 +27,11 @@ const LikedCat = ({ cat }) => {
               ) : (
                 <Female sx={{ color: 'secondary.main' }} />
               )}
-              <Typography variant="body2">{cat.tags.sex}</Typography>
+              <Typography variant="body2">{cat.tags.Gender}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <CakeOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{cat.tags.age}</Typography>
+              <Typography variant="body2">{cat.tags.Age}</Typography>
             </Box>
           </Stack>
         </Grid>
@@ -39,11 +39,11 @@ const LikedCat = ({ cat }) => {
           <Stack spacing={2} alignItems="flex-end">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <ColorLensOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{cat.tags.color}</Typography>
+              <Typography variant="body2">{cat.tags.Color}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <ChargingStationOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{cat.tags.temperament}</Typography>
+              <Typography variant="body2">{cat.tags["Energy Level"]}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PetsOutlined sx={{ color: 'secondary.main' }} />

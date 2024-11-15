@@ -7,6 +7,7 @@ import {
   Typography,
   ThemeProvider,
   createTheme,
+  Grid
 } from '@mui/material';
 import Navbar from '../navbar/navbar';
 import LikedDog from './LikedDog';  // Add this import
@@ -43,8 +44,8 @@ export default function SavedPetsPage() {
       const data = await fetchPetData() //replace with whatever middleware they're developing
       const cookieData = await getSavedAnimals()
       if (data){
-        let saved = data.filter((pet) => cookieData.includes(pet.id))
-        console.log("saved:", saved)
+        let saved = cookieData.map((id) => data.find((pet) => pet.id == id))
+        saved.reverse() // most recent saved at the top
         setPets(saved)
         setPageLoaded(true)
         
@@ -105,10 +106,10 @@ export default function SavedPetsPage() {
         flexGrow: 1, 
         bgcolor: 'background.default', 
         minHeight: '100vh',
-        pb: 4 // Add padding at bottom
+        pb: 4,// Add padding at bottom,
       }}>
         <Navbar title="Saved Pets" />
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, display: "flex", alignContent: "center"}}>
           {/* <Typography 
             variant="h4" 
             component="h1" 
@@ -121,20 +122,9 @@ export default function SavedPetsPage() {
           >
             Your Saved Pets
           </Typography> */}
-          {pageLoaded && 
-
-
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              flexDirection: { xs: 'column', md: 'row' },
-              gap: 4,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
+          
             {
-              pets.length == 0 && 
+              pageLoaded && pets.length == 0 && 
                 <Typography 
                 variant="h6" 
                 sx={{ 
@@ -142,32 +132,48 @@ export default function SavedPetsPage() {
                   color: 'text.secondary',
                   py: 8
                 }}
-              >
+                >
                 No saved pets yet. When you save a pet, they will appear here.
               </Typography>
             }
-            {
-              pets.length > 0 && 
-              pets.map((pet) => {
-                if (pet["dog/cat"] == 'dog'){
-                  return  <LikedDog dog = {pet}/>
-                }
-                else {
-                  return <LikedCat cat={pet} />
-                }
-                 
-                }
-              )
-            }
+            { pageLoaded && pets.length > 0 && 
 
+              <Grid
+              container 
+              spacing={5} // Spacing between grid items
+              sx={{
+                paddingLeft: "20px",
+                paddingRight: "20px",
+              }}
+
+              >
+
+                {pets.map((pet) => (
+                  <Grid 
+                    item 
+                    xs={12} // Full width on extra-small screens
+                    sm={6}  // 2 cards per row on small screens
+                    md={6}  // 3 cards per row on medium screens
+                    lg={6}  // 4 cards per row on large screens
+                    key={pet.id}
+                    sx={{
+                      display: 'flex',        // Flex display to center the card within each grid item
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {pet["dog/cat"] === 'dog' ? (
+                      <LikedDog dog={pet} />
+                    ) : (
+                      <LikedCat cat={pet} />
+                    )}
+                  </Grid>
+                ))}
+              </Grid>
+            }
+              
+             
             
 
-
-
-
-           
-          </Box>
-          }
         </Container>
       </Box>
     </ThemeProvider>
@@ -176,6 +182,16 @@ export default function SavedPetsPage() {
 
 
 /*
+
+ <Box 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 4,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
  {pets.bear && (
               <Box sx={{ width: '100%', maxWidth: '400px' }}>
                 <LikedDog dog={pets.bear} />

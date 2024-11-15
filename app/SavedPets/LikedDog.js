@@ -29,19 +29,19 @@ const LikedDog = ({ dog }) => {
               ) : (
                 <Female sx={{ color: 'secondary.main' }} />
               )}
-              <Typography variant="body2">{dog.tags.sex}</Typography>
+              <Typography variant="body2">{dog.tags.Gender}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <CakeOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{dog.tags.age}</Typography>
+              <Typography variant="body2">{dog.tags.Age}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <ScaleOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{dog.tags.weight}</Typography>
+              <Typography variant="body2">{dog.tags.Weight}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <ColorLensOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{dog.tags.color}</Typography>
+              <Typography variant="body2">{dog.tags.Color}</Typography>
             </Box>
           </Stack>
         </Grid>
@@ -57,7 +57,7 @@ const LikedDog = ({ dog }) => {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PetsOutlined sx={{ color: 'secondary.main' }} />
-              <Typography variant="body2">{dog.tags.cats}</Typography>
+              <Typography variant="body2">{dog.tags["Good With Cats?"]}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <ChargingStationOutlined sx={{ color: 'secondary.main' }} />
