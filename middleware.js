@@ -9,10 +9,10 @@ export async function middleware(request) {
   const response = NextResponse.next();
 
   // Get the 'pets-data' cookie from the request
-  const petDataCookie = request.cookies.get(COOKIE_NAME);
+  const needPetData = request.headers.get("pet-data");
 
   // If there's no pets-data cookie or it needs a refresh, fetch data
-  if (!petDataCookie || needsRefresh(petDataCookie)) {
+  if (needPetData) {
     try {
       // Call the API to get pet data
       const apiResponse = await fetch(`${request.nextUrl.origin}/api/animals`, {
@@ -24,29 +24,27 @@ export async function middleware(request) {
       });
       const data = await apiResponse.json();
       console.log("Is Array: " + Array.isArray(data));
-      const newData = data.slice(0, 5);
-
-      console.log(newData);
 
       // Create the cookie value with only the first 10 objects
-      const cookieValue = {
-        data: newData,
-        timestamp: Date.now(),
-        totalCount: data.length,
-      };
+      response.headers.set(
+        "pet-data",
+        JSON.stringify(
+          {
+            data: data,
+            timestamp: Date.now(),
+            totalCount: data.length,
+          },
+          (key, value) => {
+            // Optionally clean or filter out unwanted characters
+            if (typeof value === "string") {
+              return value.replace(/[^\x00-\x7F]/g, ""); // Removes non-ASCII characters
+            }
+            return value;
+          }
+        )
+      );
 
-      const cookieSize = new TextEncoder().encode(
-        JSON.stringify(cookieValue)
-      ).length;
-
-      console.log("Cookie Size " + cookieSize + " bytes");
-
-      response.cookies.set(COOKIE_NAME, JSON.stringify(cookieValue), {
-        maxAge: TWENTY_FOUR_HOURS / 1000, // maxAge in seconds
-        path: "/",
-      });
-
-      console.log("Pet data cookie set with fresh data");
+      console.log("Data Fetched");
     } catch (error) {
       console.error("Error fetching pet data:", error);
       return NextResponse.json(
