@@ -13,7 +13,8 @@ import { NavigateBefore, NavigateNext } from '@mui/icons-material';
 
 export const LikedPetCard = ({ pet, children }) => {
   const [currentPic, setCurrentPic] = React.useState(0);
-  const numpics = pet.images.length;
+  console.log("pet.image", pet.image)
+  const numpics = (pet.image != undefined && pet.image.isArray()) ? pet.image.length : 1;
 
   const prevPic = () => {
     setCurrentPic((currentPic - 1 + numpics) % numpics);
@@ -36,7 +37,7 @@ export const LikedPetCard = ({ pet, children }) => {
         <CardMedia
           component="img"
           height="300"
-          image={pet.images[currentPic]}
+          image={(pet.image != undefined && pet.image.isArray()) ? pet.image[currentPic] : pet.image}
           alt={pet.name}
           sx={{ objectFit: 'cover' }}
         />

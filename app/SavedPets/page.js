@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -11,6 +11,9 @@ import {
 import Navbar from '../navbar/navbar';
 import LikedDog from './LikedDog';  // Add this import
 import LikedCat from './LikedCat';  // Add this import
+import { fetchPetData } from '../fetchPetData/fetchPetData';
+import { getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
+
 
 // Theme creation
 const theme = createTheme({
@@ -28,6 +31,32 @@ const theme = createTheme({
 });
 
 export default function SavedPetsPage() {
+  const [pets, setPets] = useState([])
+  const [pageLoaded, setPageLoaded] = useState(false)
+
+  useEffect(() => {
+    updatePetData();
+  }, [])
+
+  async function updatePetData(){
+    try {
+      const data = await fetchPetData() //replace with whatever middleware they're developing
+      const cookieData = await getSavedAnimals()
+      if (data){
+        let saved = data.filter((pet) => cookieData.includes(pet.id))
+        console.log("saved:", saved)
+        setPets(saved)
+        setPageLoaded(true)
+        
+      }
+  
+    } catch (error) {
+      console.error("Error fetching pet data", error.message);
+      setErrorMessage('Failed to Connect to Supabase.');
+    }
+  }
+
+  /*
   const [pets] = useState({
     bear: {
       name: "Bear",
@@ -68,6 +97,7 @@ export default function SavedPetsPage() {
       ],
     }
   });
+  */
 
   return (
     <ThemeProvider theme={theme}>
@@ -91,7 +121,9 @@ export default function SavedPetsPage() {
           >
             Your Saved Pets
           </Typography> */}
-          
+          {pageLoaded && 
+
+
           <Box 
             sx={{ 
               display: 'flex', 
@@ -101,7 +133,50 @@ export default function SavedPetsPage() {
               alignItems: 'center'
             }}
           >
-            {pets.bear && (
+            {
+              pets.length == 0 && 
+                <Typography 
+                variant="h6" 
+                sx={{ 
+                  textAlign: 'center',
+                  color: 'text.secondary',
+                  py: 8
+                }}
+              >
+                No saved pets yet. When you save a pet, they will appear here.
+              </Typography>
+            }
+            {
+              pets.length > 0 && 
+              pets.map((pet) => {
+                if (pet["dog/cat"] == 'dog'){
+                  return  <LikedDog dog = {pet}/>
+                }
+                else {
+                  return <LikedCat cat={pet} />
+                }
+                 
+                }
+              )
+            }
+
+            
+
+
+
+
+           
+          </Box>
+          }
+        </Container>
+      </Box>
+    </ThemeProvider>
+  );
+}
+
+
+/*
+ {pets.bear && (
               <Box sx={{ width: '100%', maxWidth: '400px' }}>
                 <LikedDog dog={pets.bear} />
               </Box>
@@ -123,9 +198,4 @@ export default function SavedPetsPage() {
                 No saved pets yet. When you save a pet, they will appear here.
               </Typography>
             )}
-          </Box>
-        </Container>
-      </Box>
-    </ThemeProvider>
-  );
-}
+*/
