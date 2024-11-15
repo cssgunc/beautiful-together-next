@@ -24,7 +24,7 @@ const Notification = ({name, onClose}) => {
                          <Typography variant="subtitle1" component="span"
                           transition= 'opacity 0.2s ease'
                          >
-                           {name} was saved to your liked pets.
+                           {name} was saved to your Saved Pets.
                          </Typography>
   
                          <style>
