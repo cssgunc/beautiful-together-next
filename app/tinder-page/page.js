@@ -18,7 +18,7 @@ import { fetchPetData } from '../fetchPetData/fetchPetData';
 import Navbar from '../navbar/navbar';
 import { useEffect, useState } from 'react';
 import Notification from './Notification';
-import { saveAnimal } from '../savedPetsCookie/savedPetsCookie';
+import { saveAnimal, getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
 
 
 const theme = createTheme({
@@ -51,8 +51,10 @@ export default function Home() {
   async function updatePetData(){
     try {
       const data = await fetchPetData()
+      const saved = await getSavedAnimals();
       if (data){
-        setPetData(data)
+        const filtered = data.filter((pet) => !saved.includes(pet.id))
+        setPetData(filtered)
         setPageLoaded(true)
         
       }
