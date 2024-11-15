@@ -91,6 +91,10 @@ export const LikedPetCard = ({ pet, children }) => {
         gap: 2
       }}>
         <Button 
+          component="a"
+          href={pet.link}
+          target="_blank"
+          rel="noopener noreferrer"
           variant="contained" 
           color="secondary" 
           fullWidth
@@ -103,6 +107,10 @@ export const LikedPetCard = ({ pet, children }) => {
           More Information
         </Button>
         <Button 
+          component="a"
+          href={`https://beautifultogethersanctuary.com/${pet.species}-adoption/`}
+          target="_blank"
+          rel="noopener noreferrer"
           variant="contained" 
           color="primary" 
           fullWidth
