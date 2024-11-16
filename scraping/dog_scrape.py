@@ -8,8 +8,10 @@ from dotenv import load_dotenv
 
 # Supabase credentials
 load_dotenv()
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+
+table_to_update = 'testing'
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -91,14 +93,14 @@ for dog in dogs:
     tags = get_tags(dog['link'])
     images = get_images(dog['link'])
     
-    animal_type = 'dog' if 'dog' in dog['link'].lower() else 'cat'
+    animal_type = 'dog'
     dog['tags'] = tags
     dog['images'] = images
     dog['type'] = animal_type
 
 # Fetch existing records from Supabase
 def fetch_existing_animals():
-    response = supabase.table('Available Animals').select('*').eq('"dog/cat"', 'dog').execute()
+    response = supabase.table(table_to_update).select('*').eq('"dog/cat"', 'dog').execute()
     if response.data:
         return {item['link']: item for item in response.data}
     return {}
@@ -127,7 +129,7 @@ def update_database_with_scraped_data(animals):
 
     # Perform database operations
     for animal in animals_to_insert:
-        supabase.table('Available Animals').insert({
+        supabase.table(table_to_update).insert({
             'name': animal['name'],
             'tags': animal['tags'],
             'link': animal['link'],
@@ -136,14 +138,14 @@ def update_database_with_scraped_data(animals):
         }).execute()
 
     for animal in animals_to_update:
-        supabase.table('Available Animals').update({
+        supabase.table(table_to_update).update({
             'tags': animal['tags'],
             'images': animal['images'],  # Update images
             'dog/cat': animal['type']
         }).eq('link', animal['link']).execute()
 
     for link in animals_to_delete:
-        supabase.table('Available Animals').delete().eq('link', link).execute()
+        supabase.table(table_to_update).delete().eq('link', link).execute()
 
     pprint.pprint(animals_to_delete)
     pprint.pprint(animals_to_insert)

@@ -8,8 +8,10 @@ from dotenv import load_dotenv
 
 # Supabase credentials
 load_dotenv()
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+
+table_to_update = 'testing'
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -29,67 +31,78 @@ for tag in soup.find_all('div', class_='col-12 Bzl-dog-heading heading-equal'):
     link_tag = tag.find('a', href=True, title=True)
     if link_tag:
         link = link_tag['href']
-    cats.append({'name': clean_name, 'link': link})
+        cats.append({'name': clean_name, 'link': link})
 
-# Function to scrape tags from each cat page - from Ryan
+# Function to scrape tags from each cat page
 def get_tags(url) -> dict[str, str]:
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
-    # dict to store tags
     labels = {}
     
     # Extract list of tags
     for tag in soup.find_all('li', class_='features_item'):
-        # getting the type of tag
         header = tag.find("i")['title']
-        # getting the value of the tag
         label = tag.get_text(strip=True)
         labels[header] = label
 
     return labels
 
-# Scrape and store images in a list
-# url = "https://beautifultogethersanctuary.com/available-cats/"
-# html_text = requests.get(url)
+# Add unwanted images (including \u202f) to the exclusion list
+unwanted_images = [
+    'buzz-rescue-mark.png',
+    'amazon-wishlist.jpg',
+    'Vet-Naturals-1.png',
+    'btogether-new-sanctuary-286x116-1.png'
+]
 
-# soup = BeautifulSoup(html_text.content, 'html.parser')
+def is_allowed_image(img_url):
+    # Check if the image URL contains any unwanted characters
+    if '\u202f' in img_url:
+        return False
+    for unwanted in unwanted_images:
+        if unwanted in img_url:
+            return False
+    return True
 
-# images = soup.find_all('img')
+# Scrape images for each cat page
+def get_images(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    img_list = []
+    
+    # Find all images for the cat on its page
+    for img in soup.find_all('img', src=True):
+        img_url = img['src']
+        
+        # If the image is base64, skip it
+        if img_url.startswith('data:'):
+            continue
+        
+        # If the image starts with '/', it's relative, so append the base URL
+        if img_url.startswith('/'):
+            img_url = url + img_url
+        
+        # Check if the image is allowed
+        if is_allowed_image(img_url):
+            img_list.append(img_url)
+    
+    return img_list
 
-# div_titles = soup.find_all('div', {"class" : "col-12 Bzl-dog-heading heading-equal"})
-# name_list = []
-# for div_title in div_titles:
-#     title = div_title.find('a')
-#     name_list.append(title.get('title'))
-# img_list = []
-# for img in images:
-#     img_url = img.get("data-src")
-#     if img_url and not img_url.startswith('data:'):
-#         if img_url.startswith('/'):
-#             img_url += url
-#     if(img_url != None):
-#         img_list.append(img_url)
-
-# values_dict = {}
-# for i in range(len(name_list)):
-#     values_dict[name_list[i]] = img_list[i+1]
-
-# Store fields for each cat
+# Store fields for each cat and fetch their images
 for cat in cats:
-    # Scrape tags from individual cat page
+    # Scrape tags and images from individual cat page
     tags = get_tags(cat['link'])
-    # Determine if it is a dog or cat based on the URL
-    animal_type = 'dog' if 'dog' in cat['link'].lower() else 'cat'
-    # Store the data in the cat's dictionary
+    images = get_images(cat['link'])
+    
+    animal_type = 'cat'
     cat['tags'] = tags
-    # cat['images'] = values_dict[cat['name']]
+    cat['images'] = images
     cat['type'] = animal_type
 
 # Fetch existing records from Supabase
 def fetch_existing_animals():
-    response = supabase.table('Available Animals').select('*').eq('"dog/cat"', 'cat').execute()
+    response = supabase.table(table_to_update).select('*').eq('"dog/cat"', 'cat').execute()
     if response.data:
-        # Use link as the unique key
         return {item['link']: item for item in response.data}
     return {}
 
@@ -117,23 +130,23 @@ def update_database_with_scraped_data(animals):
 
     # Perform database operations
     for animal in animals_to_insert:
-        supabase.table('Available Animals').insert({
+        supabase.table(table_to_update).insert({
             'name': animal['name'],
             'tags': animal['tags'],
             'link': animal['link'],
-            # 'images': animal['images'],
-            'dog/cat': animal['type']
+            'images': animal['images'],  # Insert filtered images
+            'dog/cat': 'cat'
         }).execute()
 
     for animal in animals_to_update:
-        supabase.table('Available Animals').update({
+        supabase.table(table_to_update).update({
             'tags': animal['tags'],
-            # 'images': animal['images'],
-            'dog/cat': animal['type']
+            'images': animal['images'],  # Update images
+            'dog/cat': 'cat'
         }).eq('link', animal['link']).execute()
 
     for link in animals_to_delete:
-        supabase.table('Available Animals').delete().eq('link', link).execute()
+        supabase.table(table_to_update).delete().eq('link', link).execute()
 
     pprint.pprint(animals_to_delete)
     pprint.pprint(animals_to_insert)
@@ -141,23 +154,3 @@ def update_database_with_scraped_data(animals):
 
 # Run the update
 update_database_with_scraped_data(cats)
-
-# # Before insertion, delete existing 'cat' entries
-# def clear_cats_from_supabase():
-#     response = supabase.table('Available Animals').delete().eq('"dog/cat"', 'cat').execute()
-
-# clear_cats_from_supabase()
-
-# # Insert into supabase
-# for cat in cats:
-#     supabase.table('Available Animals').insert({
-#         'name': cat['name'],
-#         'tags': cat['tags'],
-#         # 'images': cat['images'],
-#         'dog/cat': cat['type'],
-#         'link': cat['link']
-#     }).execute()
-
-# pprint.pprint(cats)
-
-
