@@ -10,7 +10,7 @@ import {
   Chip,
   Typography,
 } from '@mui/material';
-import { Favorite, Close, Male, Cake, Scale, Palette, ChildCare, Pets, Battery0Bar, LocationOn, School} from '@mui/icons-material';
+import { Favorite, Close, Male, Cake, Scale, Palette, ChildCare, Pets, Battery0Bar, LocationOn, School, FamilyHome, House} from '@mui/icons-material';
 
 /*
 const iconMap = {
@@ -33,7 +33,15 @@ const iconMap = {
   "State" : LocationOn,
   "Weight": Scale,
   "Good With Cats?": Pets,
-  "Is Cat DeClawed?": Pets
+  "Is Cat DeClawed?": Pets,
+  "Litter Name": FamilyHome,
+  "Good With Kids?" : ChildCare,
+  "Foster": House,
+  "Good With Dogs?" : Pets,
+  "Good With Livestock?": Pets 
+
+
+
 };
 
 
@@ -91,7 +99,7 @@ const PetCard = ({ pet, adopt, pass}) => {
         <CardContent>
           <Grid container spacing={1} sx={{ mb: 2 }}>
             {Object.entries(pet.tags).map(([key, value]) => {
-              const IconComponent = iconMap[key];
+              const IconComponent = (iconMap[key] != undefined) ? iconMap[key] : Pets;
               return (
                 <Grid item key={key}>
                   <Chip 

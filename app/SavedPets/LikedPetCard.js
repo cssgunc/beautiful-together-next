@@ -13,7 +13,6 @@ import { NavigateBefore, NavigateNext } from '@mui/icons-material';
 
 export const LikedPetCard = ({ pet, children }) => {
   const [currentPic, setCurrentPic] = React.useState(0);
-  console.log("pet.image", pet.image)
   const numpics = (pet.image != undefined && pet.image.isArray()) ? pet.image.length : 1;
 
   const prevPic = () => {

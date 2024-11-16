@@ -47,6 +47,7 @@ export default function SavedPetsPage() {
         let saved = cookieData.map((id) => data.find((pet) => pet.id == id))
         saved.reverse() // most recent saved at the top
         setPets(saved)
+        console.log(saved)
         setPageLoaded(true)
         
       }
