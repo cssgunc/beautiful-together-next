@@ -127,7 +127,9 @@ export default function Home() {
           {}
         </div>
         
+
         {/*<FetchAnimalsDataTest/>  /*<--- was used for testing */}
+
       </main>
       <footer className={styles.footer}>
         {}

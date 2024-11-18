@@ -1,5 +1,7 @@
+'use client'
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
 import { 
   Card, 
   CardContent, 
@@ -39,9 +41,6 @@ const iconMap = {
   "Foster": House,
   "Good With Dogs?" : Pets,
   "Good With Livestock?": Pets 
-
-
-
 };
 
 
