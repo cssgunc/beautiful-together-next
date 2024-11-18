@@ -7,11 +7,9 @@ import os
 from dotenv import dotenv_values
 
 # Supabase credentials
-config = dotenv_values(".env.local")
-SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
-SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
-
-
+load_dotenv()
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
 # The table that is edited
 table_to_update = 'Available Animals'
@@ -157,3 +155,6 @@ def update_database_with_scraped_data(animals):
 
 # Run the update
 update_database_with_scraped_data(cats)
+print("List of all available cats:")
+for cat in cats:
+    print(cat['name'])
