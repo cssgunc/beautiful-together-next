@@ -5,10 +5,19 @@ import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Container,
+  Card
   Typography
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import PetCard from './PetCard';
+import { petsData, petsData2} from './petsData';
+import { fetchPetData } from '../fetchPetData/fetchPetData';
+import Navbar from '../navbar/navbar';
+import { useEffect, useState } from 'react';
+import Notification from './Notification';
+import { saveAnimal, getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
+
+
 import Navbar from '../navbar/navbar';
 import { getPetData } from '../../utils/indexedDB';
 
@@ -25,7 +34,6 @@ const theme = createTheme({
     },
   },
 });
-
 const defaultImage = 'https://beautifultogethersanctuary.com/wp-content/uploads/2023/09/btogether-new-sanctuary-286x116-1.png';
 
 export default function Home() {
@@ -156,6 +164,7 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
         <Navbar />
+        {pageLoaded && 
         <Container maxWidth="sm" sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>
@@ -186,6 +195,8 @@ export default function Home() {
             </Box>
           </Box>
         </Container>
+        }
+        
       </Box>
     </ThemeProvider>
   );

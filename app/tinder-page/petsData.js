@@ -16,3 +16,44 @@ export const petsData = [
     },
     // Add more pets here...
   ];
+
+export const petsData2 = [
+  {
+    "created_at": "2024-11-03T00:11:34.217271+00:00",
+    "dog/cat" : "cat",
+    "id": 547,
+    "images" : null,
+    "link" : null,
+    "name" : "Pecan",
+    "tags": {
+      "Age": "Baby (08/10/2024) - Estimated",
+      "Breed": "Domestic Short Hair",
+      "Color" : "Tabby (Brown / Chocolate)",
+      "Energy Level" : "Social & Friendly",
+      "Gender" : "Male",
+      "Litterbox Trained?" : "I'm Litterbox Trained",
+      "Good With Cats?" : "I Like All Cats",
+      "State" : "North Carolina",
+      "Weight" : "3 Pounds"
+      
+    }
+
+  }, 
+  {
+    "created_at": "2024-11-03T00:11:34.402024+00:00",
+    "dog/cat" : "cat",
+    "id": 550,
+    "images" : null,
+    "link" : null,
+    "name" : "Phantom",
+    "tags": {
+      "Age": "Baby (05/03/2024) - Estimated",
+      "Breed": "Domestic Short Hair",
+      "Color" : "Gray / Blue / Silver",
+      "Energy Level" : "Social & Friendly",
+      "Gender" : "Male",
+      "Litterbox Trained?" : "I'm Litterbox Trained"
+    }
+  }
+
+]
