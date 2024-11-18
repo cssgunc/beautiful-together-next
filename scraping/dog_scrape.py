@@ -154,3 +154,6 @@ def update_database_with_scraped_data(animals):
 
 # Run the update
 update_database_with_scraped_data(dogs)
+print("List of all available dogs:")
+for dog in dogs:
+    print(dog['name'])
