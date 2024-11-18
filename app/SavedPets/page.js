@@ -1,16 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
   Typography,
   ThemeProvider,
   createTheme,
+  Grid
 } from '@mui/material';
 import Navbar from '../navbar/navbar';
 import LikedDog from './LikedDog';  // Add this import
 import LikedCat from './LikedCat';  // Add this import
+import { fetchPetData } from '../fetchPetData/fetchPetData';
+import { getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
+
 
 // Theme creation
 const theme = createTheme({
@@ -28,9 +32,38 @@ const theme = createTheme({
 });
 
 export default function SavedPetsPage() {
+  const [pets, setPets] = useState([])
+  const [pageLoaded, setPageLoaded] = useState(false)
+
+  useEffect(() => {
+    updatePetData();
+  }, [])
+
+  async function updatePetData(){
+    try {
+      const data = await fetchPetData() //replace with whatever middleware they're developing
+      const cookieData = await getSavedAnimals()
+      if (data){
+        let saved = cookieData.map((id) => data.find((pet) => pet.id == id))
+        saved.reverse() // most recent saved at the top
+        setPets(saved)
+        console.log(saved)
+        setPageLoaded(true)
+        
+      }
+  
+    } catch (error) {
+      console.error("Error fetching pet data", error.message);
+      setErrorMessage('Failed to Connect to Supabase.');
+    }
+  }
+
+  /*
   const [pets] = useState({
     bear: {
       name: "Bear",
+      species: "dog",
+      link: "https://beautifultogethersanctuary.com/dog/bear/",
       years: "7",
       breed: "Hound & Mix",
       sex: "Male",
@@ -51,6 +84,8 @@ export default function SavedPetsPage() {
     },
     acorn: {
       name: "Acorn",
+      species: "cat",
+      link: "https://beautifultogethersanctuary.com/kitty/acorn/",
       years: "< 1",
       breed: "Domestic Short Hair",
       sex: "Male",
@@ -64,6 +99,7 @@ export default function SavedPetsPage() {
       ],
     }
   });
+  */
 
   return (
     <ThemeProvider theme={theme}>
@@ -71,10 +107,10 @@ export default function SavedPetsPage() {
         flexGrow: 1, 
         bgcolor: 'background.default', 
         minHeight: '100vh',
-        pb: 4 // Add padding at bottom
+        pb: 4,// Add padding at bottom,
       }}>
         <Navbar title="Saved Pets" />
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, display: "flex", alignContent: "center"}}>
           {/* <Typography 
             variant="h4" 
             component="h1" 
@@ -88,7 +124,67 @@ export default function SavedPetsPage() {
             Your Saved Pets
           </Typography> */}
           
-          <Box 
+            {
+              pageLoaded && pets.length == 0 && 
+                <Typography 
+                variant="h6" 
+                sx={{ 
+                  textAlign: 'center',
+                  color: 'text.secondary',
+                  py: 8
+                }}
+                >
+                No saved pets yet. When you save a pet, they will appear here.
+              </Typography>
+            }
+            { pageLoaded && pets.length > 0 && 
+
+              <Grid
+              container 
+              spacing={5} // Spacing between grid items
+              sx={{
+                paddingLeft: "20px",
+                paddingRight: "20px",
+              }}
+
+              >
+
+                {pets.map((pet) => (
+                  <Grid 
+                    item 
+                    xs={12} // Full width on extra-small screens
+                    sm={6}  // 2 cards per row on small screens
+                    md={6}  // 3 cards per row on medium screens
+                    lg={6}  // 4 cards per row on large screens
+                    key={pet.id}
+                    sx={{
+                      display: 'flex',        // Flex display to center the card within each grid item
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {pet["dog/cat"] === 'dog' ? (
+                      <LikedDog dog={pet} />
+                    ) : (
+                      <LikedCat cat={pet} />
+                    )}
+                  </Grid>
+                ))}
+              </Grid>
+            }
+              
+             
+            
+
+        </Container>
+      </Box>
+    </ThemeProvider>
+  );
+}
+
+
+/*
+
+ <Box 
             sx={{ 
               display: 'flex', 
               flexDirection: { xs: 'column', md: 'row' },
@@ -97,7 +193,7 @@ export default function SavedPetsPage() {
               alignItems: 'center'
             }}
           >
-            {pets.bear && (
+ {pets.bear && (
               <Box sx={{ width: '100%', maxWidth: '400px' }}>
                 <LikedDog dog={pets.bear} />
               </Box>
@@ -119,9 +215,4 @@ export default function SavedPetsPage() {
                 No saved pets yet. When you save a pet, they will appear here.
               </Typography>
             )}
-          </Box>
-        </Container>
-      </Box>
-    </ThemeProvider>
-  );
-}
+*/

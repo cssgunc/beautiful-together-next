@@ -13,7 +13,7 @@ import { NavigateBefore, NavigateNext } from '@mui/icons-material';
 
 export const LikedPetCard = ({ pet, children }) => {
   const [currentPic, setCurrentPic] = React.useState(0);
-  const numpics = pet.images.length;
+  const numpics = (pet.image != undefined && pet.image.isArray()) ? pet.image.length : 1;
 
   const prevPic = () => {
     setCurrentPic((currentPic - 1 + numpics) % numpics);
@@ -36,7 +36,7 @@ export const LikedPetCard = ({ pet, children }) => {
         <CardMedia
           component="img"
           height="300"
-          image={pet.images[currentPic]}
+          image={(pet.image != undefined && pet.image.isArray()) ? pet.image[currentPic] : pet.image}
           alt={pet.name}
           sx={{ objectFit: 'cover' }}
         />
@@ -91,6 +91,10 @@ export const LikedPetCard = ({ pet, children }) => {
         gap: 2
       }}>
         <Button 
+          component="a"
+          href={pet.link}
+          target="_blank"
+          rel="noopener noreferrer"
           variant="contained" 
           color="secondary" 
           fullWidth
@@ -103,6 +107,10 @@ export const LikedPetCard = ({ pet, children }) => {
           More Information
         </Button>
         <Button 
+          component="a"
+          href={`https://beautifultogethersanctuary.com/${pet.species}-adoption/`}
+          target="_blank"
+          rel="noopener noreferrer"
           variant="contained" 
           color="primary" 
           fullWidth
