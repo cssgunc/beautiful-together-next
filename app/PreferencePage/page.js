@@ -89,12 +89,19 @@ const Preferences = () => {
         alert(data);
         
         const parseData = JSON.parse(data);
-        // If 'Age' has any selected options, join them into a comma-separated string
-        const ageText = parseData.Age ? parseData.Age.join(', ') : 'No Age selected';
-        alert(ageText);
+        // Access the "Age" preferences (which is an array)
+        const agePreferences = parseData["Age"];
+        alert(agePreferences);
+        const goodWithPetsPreferences = parseData["Good With Pets?"];
+        alert(goodWithPetsPreferences);
 
-        const goodWithText = parseData["Good With Pets?"] ? parseData["Good With Pets?"].join(', ') : 'No pets selected';
-        alert(goodWithText);
+        // If 'Age' has any selected options, join them into a comma-separated string
+
+        //const ageText = parseData.Age ? parseData.Age.join(', ') : 'No Age selected';
+        //alert(ageText);
+
+        //const goodWithText = parseData["Good With Pets?"] ? parseData["Good With Pets?"].join(', ') : 'No pets selected';
+        //alert(goodWithText);
 
         //May have to initialize or deal with null preferences in the future
     };
