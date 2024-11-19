@@ -2,18 +2,18 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { useEffect } from "react";
-import { checkAndFetchPetData } from '../utils/petDataManager';  // Changed this line
+import { checkAndFetchPetData } from "../utils/petDataManager"; // Changed this line
 
 const geistSans = localFont({
-    src: "./fonts/GeistVF.woff",
-    variable: "--font-geist-sans",
-    weight: "100 900",
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
 });
 
 const geistMono = localFont({
-    src: "./fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
 });
 
 export default function RootLayout({ children }) {
@@ -67,17 +67,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-
-}
-
-export default function RootLayout({ children }) {
-    return (
-        <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable}`}>
-                <PetDataInitializer>
-                    {children}
-                </PetDataInitializer>
-            </body>
-        </html>
-    );
 }
