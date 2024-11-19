@@ -1,44 +1,165 @@
-// Navbar.js
 import React, { useState } from 'react';
-import './styles.css'; // Import the CSS file
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import DensitySmallIcon from '@mui/icons-material/DensitySmall';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemButton,
+} from '@mui/material';
+import { 
+  Favorite, 
+  Menu as MenuIcon,
+  Pets,
+  Settings,
+  BookmarkBorder,
+  ChevronRight,
+} from '@mui/icons-material';
 
-const Navbar = (inputs) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+const Navbar = ({ title }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setDrawerOpen(open);
   };
 
-  //replace image.png with Beautiful Together Image
-  //replace links with future pages
-  //Uses Material UI dependency, RUN npm install
+  const menuItems = [
+    { text: 'Search Pets', icon: <Pets />, href: '/tinder-page' },
+    { text: 'Preferences', icon: <Settings />, href: '/PreferencePage' },
+    { text: 'Saved Pets', icon: <BookmarkBorder />, href: '/SavedPets' },
+  ];
+
   return (
-    <nav className="navbar">
-      <img src="/logo.png" alt="Logo" className="logo" />
-      <div className="navbar-text">{inputs.title}</div>
-      <div>
-        <div className = "icons">
-            <div className='iconInDiv'>
-            <FavoriteIcon className='heart'/>
-            </div>
-            <div className="dropdown">
-              <div className='iconInDiv'>
-              <DensitySmallIcon onClick={toggleDropdown} className='lines'/>
-              </div>
-            </div>
-        {dropdownOpen && (
-            <div className="dropdown-content">
-              <a href="/">Home Page</a>
-              <a href="#link2">Link 2</a>
-              <a href="#link3">Link 3</a>
-            </div>
-        )}
-        </div>
-          
-      </div>
-    </nav>
+    <>
+      <AppBar position="static" sx={{ bgcolor: '#40a824', height: '80px', justifyContent: 'center' }}>
+        <Toolbar sx={{ padding: '0 !important' }}>
+          <Box 
+            component="img" 
+            src="/logo.png" 
+            alt="Logo" 
+            sx={{ 
+              height: '80px',
+              marginLeft: 0
+            }} 
+          />
+          <Typography 
+            variant="h4" 
+            component="div" 
+            sx={{ 
+              flexGrow: 1, 
+              textAlign: 'center', 
+              fontWeight: 'bold',
+              ml: -7.5 
+            }}
+          >
+            {title}
+          </Typography>
+          <IconButton 
+            color="inherit" 
+            sx={{ 
+              '& .MuiSvgIcon-root': { 
+                fontSize: '3rem',
+                '&:hover': {
+                  color: 'rgb(219, 240, 219)'
+                }
+              }
+            }}
+          >
+            <Favorite />
+          </IconButton>
+          <IconButton 
+            color="inherit"
+            onClick={toggleDrawer(true)}
+            sx={{ 
+              '& .MuiSvgIcon-root': { 
+                fontSize: '3rem',
+                '&:hover': {
+                  color: 'rgb(219, 240, 219)'
+                }
+              },
+              marginRight: '8px'
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 280,
+            bgcolor: '#40a824',
+            color: 'white',
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            p: 1,
+          }}
+        >
+          <IconButton 
+            onClick={toggleDrawer(false)}
+            sx={{ 
+              color: 'white',
+              '&:hover': {
+                color: 'rgb(219, 240, 219)'
+              }
+            }}
+          >
+            <ChevronRight sx={{ fontSize: '2rem' }} />
+          </IconButton>
+        </Box>
+        <List sx={{ pt: 0 }}>
+          {menuItems.map((item) => (
+            <ListItem 
+              key={item.text} 
+              disablePadding
+              sx={{
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <ListItemButton
+                component="a"
+                href={item.href}
+                sx={{
+                  py: 2,
+                  '&:hover': {
+                    bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: 'white', minWidth: 45 }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText 
+                  primary={item.text} 
+                  sx={{
+                    '& .MuiListItemText-primary': {
+                      fontSize: '1.1rem',
+                    },
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </>
   );
 };
 
