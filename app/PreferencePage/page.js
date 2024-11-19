@@ -31,8 +31,19 @@ import {
 } from '@mui/icons-material';
 import Navbar from '../navbar/navbar';
 
-const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
-    const [isOpen, setIsOpen] = useState(false);
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#4caf50', // green
+    },
+    secondary: {
+      main: '#f44336', // red
+    },
+    background: {
+      default: '#F8F6F3',
+    },
+  },
+});
 
 const PreferenceSection = ({ title, options, icon }) => {
   const [selected, setSelected] = useState([]);
@@ -144,49 +155,47 @@ const Preferences = () => {
     alert('Preferences saved!');
   };
 
-    const handleSelectOption = (title, option) => {
-        setSelectedOptions(prevSelected => {
-            const currentSelection = prevSelected[title] || [];
-            if (currentSelection.includes(option)) {
-                return { ...prevSelected, [title]: currentSelection.filter(item => item !== option) };
-            }
-            return { ...prevSelected, [title]: [...currentSelection, option] };
-        });
-    };
-
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission
-        //alert('Preferences saved! ' + JSON.stringify(selectedOptions));
-        localStorage.setItem('preferences', JSON.stringify(selectedOptions));
-        //To Get Data in JSON form Use: 
-        const data = localStorage.getItem('preferences');
-        alert(data);
-        
-        const parseData = JSON.parse(data);
-        // Access the "Age" preferences (which is an array)
-        const agePreferences = parseData["Age"];
-        alert(agePreferences);
-        const goodWithPetsPreferences = parseData["Good With Pets?"];
-        alert(goodWithPetsPreferences);
-
-        // If 'Age' has any selected options, join them into a comma-separated string
-
-        //const ageText = parseData.Age ? parseData.Age.join(', ') : 'No Age selected';
-        //alert(ageText);
-
-        //const goodWithText = parseData["Good With Pets?"] ? parseData["Good With Pets?"].join(', ') : 'No pets selected';
-        //alert(goodWithText);
-
-        //May have to initialize or deal with null preferences in the future
-    };
-
-    return (
-        <div>
-            <Navbar title='Preferences'/>
-            <div className="container">
+  return (
+    <ThemeProvider theme={theme}>
+      <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
+        {/* <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Beautiful Together Animal Sanctuary
+            </Typography>
+            <IconButton color="inherit">
+              <Favorite />
+            </IconButton>
+            <IconButton color="inherit">
+              <Menu />
+            </IconButton>
+          </Toolbar>
+        </AppBar> */}
+        <Navbar />
+        <Container maxWidth="sm" sx={{ mt: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ width: '90%', maxWidth: '400px' }}>
+              <Card 
+                component="form" 
+                onSubmit={handleSubmit}
+                sx={{ 
+                  width: '100%',
+                  bgcolor: '#FFFFFF',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                }}
+              >
+                <Box
+                  sx={{
+                    bgcolor: 'rgba(76, 175, 80, 0.9)',
+                    color: 'white',
+                    padding: '16px',
+                  }}
+                >
+                  <Typography variant="h6">
+                    Your Preferences
+                  </Typography>
+                </Box>
                 
                 {preferenceOptions.map((preference, index) => (
                   <PreferenceSection
