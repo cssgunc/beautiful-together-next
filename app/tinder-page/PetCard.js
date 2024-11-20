@@ -1,7 +1,5 @@
 "use client";
-import React from "react";
-import { useState, useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -28,17 +26,7 @@ import {
   House,
 } from "@mui/icons-material";
 
-/*
-const iconMap = {
-  Pets,
-  Male,
-  Cake,
-  Scale,
-  Palette,
-  ChildCare,
-};
-*/
-
+// Map icons to traits
 const iconMap = {
   Age: Cake,
   Breed: Pets,
@@ -57,18 +45,89 @@ const iconMap = {
   "Good With Livestock?": Pets,
 };
 
-const PetCard = ({ pet, adopt, pass }) => {
-  const [animation, setAnimation] = useState(""); // Track animation type
+const defaultImage =
+  "https://beautifultogethersanctuary.com/wp-content/uploads/2023/09/btogether-new-sanctuary-286x116-1.png";
 
+const PetCard = ({ petsQueue }) => {
+  const [currentPet, setCurrentPet] = useState(petsQueue[0]);
+  const [animation, setAnimation] = useState(""); // Track animation type
+  const [index, setIndex] = useState(0);
+
+  // Handle pet swipe (pass/adopt)
   const handleSwipe = (direction) => {
     setAnimation(direction);
-    if (direction === "swipe-left") pass();
-    if (direction === "swipe-right") adopt();
-
     setTimeout(() => {
-      setAnimation("");
-    }, 500);
+      // Update the pet after the animation
+      if (direction === "swipe-left") {
+        handlePass();
+      }
+      if (direction === "swipe-right") {
+        handleAdopt();
+      }
+      setAnimation(""); // Reset animation after swipe
+    }, 500); // Wait for the animation to finish
   };
+
+  const handleAdopt = () => {
+    if (index + 1 < petsQueue.length) {
+      setIndex(index + 1); // Move to the next pet
+      console.log("Adopted pet!");
+    }
+  };
+
+  // Function to simulate the pass action
+  const handlePass = () => {
+    if (index + 1 < petsQueue.length) {
+      setIndex(index + 1); // Move to the next pet
+      console.log("Passed on pet");
+    }
+  };
+
+  // Transform pet data to match PetCard format
+  const transformPetData = (pet) => {
+    if (!pet) return null;
+
+    const traits = [];
+    if (pet.tags) {
+      if (pet.tags.Breed) traits.push({ icon: "Pets", text: pet.tags.Breed });
+      if (pet.tags.Gender) traits.push({ icon: "Male", text: pet.tags.Gender });
+      if (pet.tags.Age)
+        traits.push({ icon: "Cake", text: pet.tags.Age.split("-")[0].trim() });
+      if (pet.tags.Weight)
+        traits.push({ icon: "Scale", text: pet.tags.Weight });
+      if (pet.tags.Color)
+        traits.push({ icon: "Palette", text: pet.tags.Color });
+      if (pet.tags["Good with Kids"]) {
+        traits.push({ icon: "ChildCare", text: pet.tags["Good with Kids"] });
+      }
+    }
+
+    let imageUrl = defaultImage;
+    if (pet.images && pet.images.length > 0 && pet.images[0]) {
+      imageUrl = pet.images[0].startsWith("http")
+        ? pet.images[0]
+        : `${pet.images[0]}`;
+    }
+
+    return {
+      id: pet.id,
+      name: pet.name || "Unknown",
+      age: pet.tags?.Age ? pet.tags.Age.split("(")[0].trim() : "Unknown",
+      image: imageUrl,
+      traits,
+      summary: pet.tags?.["Energy Level"]
+        ? `${pet.name} is ${pet.tags["Energy Level"].toLowerCase()}. ${
+            pet.tags.Breed ? `This lovely ${pet.tags.Breed}` : "This pet"
+          } is looking for a forever home!`
+        : `Meet ${pet.name}! A lovely ${
+            pet.tags?.Breed || "pet"
+          } looking for a forever home.`,
+    };
+  };
+
+  useEffect(() => {
+    setCurrentPet(transformPetData(petsQueue[index]));
+  }, [index]);
 
   return (
     <Card
@@ -95,8 +154,8 @@ const PetCard = ({ pet, adopt, pass }) => {
         <CardMedia
           component="img"
           height="300"
-          image={pet.image}
-          alt={pet.name}
+          image={currentPet.image}
+          alt={currentPet.name}
           sx={{ objectFit: "cover" }}
         />
         <Box
@@ -111,19 +170,18 @@ const PetCard = ({ pet, adopt, pass }) => {
           }}
         >
           <Typography variant="h6" component="span">
-            {pet.name}
+            {currentPet.name}
           </Typography>
           <Typography variant="h6" component="span" sx={{ ml: 1 }}>
-            {pet.age}
+            {currentPet.age}
           </Typography>
         </Box>
       </Box>
       <CardContent>
         <Grid container spacing={1} sx={{ mb: 2 }}>
-          {Array.isArray(pet.traits) &&
-            pet.traits.map((trait, index) => {
-              const IconComponent =
-                iconMap[trait.icon] !== undefined ? iconMap[trait.icon] : Pets; // Use fallback icon if icon key is not found
+          {Array.isArray(currentPet.traits) &&
+            currentPet.traits.map((trait, index) => {
+              const IconComponent = iconMap[trait.icon] || Pets;
               return (
                 <Grid item key={index}>
                   <Chip
@@ -142,7 +200,7 @@ const PetCard = ({ pet, adopt, pass }) => {
         </Grid>
 
         <Typography variant="body2" color="text.secondary">
-          {pet.summary}
+          {currentPet.summary}
         </Typography>
       </CardContent>
       <Box sx={{ display: "flex", justifyContent: "space-between", p: 2 }}>
