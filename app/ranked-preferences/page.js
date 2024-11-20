@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
 const SUPABASE_URL = 'https://bdcvlsgmanecdortkjcu.supabase.co';
-const SUPABASE_KEY = 'your-supabase-key';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkY3Zsc2dtYW5lY2RvcnRramN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4ODIxNzIsImV4cCI6MjA0MjQ1ODE3Mn0.mVnJfs6UA-cPvRTTie8XmPmhCSNmfK5PtzgZ9Zhy9Ss';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Fetch animals from Supabase
@@ -96,4 +96,11 @@ const preferences = {
   "Special Needs": ["None"]
 };
 
-// rankAnimals(preferences);
+// Call rankAnimals function to get the ranked animals in the terminal
+rankAnimals(preferences)
+  .then(rankedAnimals => {
+    console.log("Final Ranked Animals:", rankedAnimals);
+  })
+  .catch(error => {
+    console.error("Error ranking animals:", error);
+  });
