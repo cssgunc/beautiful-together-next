@@ -152,5 +152,16 @@ def update_database_with_scraped_data(animals):
     pprint.pprint(animals_to_insert)
     pprint.pprint(animals_to_update)
 
+# Function to print the current database contents
+def print_available_animals():
+    response = supabase.table(table_to_update).select('*').execute()
+    if response.data:
+        pprint.pprint(response.data)
+    else:
+        print("No data found in the 'Available Animals' table.")
+
+
+# Call the function to print the data
+print_available_animals()
 # Run the update
 update_database_with_scraped_data(dogs)

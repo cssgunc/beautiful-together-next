@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './styles.css';
 import Navbar from '../navbar/navbar';
+import { rankAnimals } from '../ranked-preferences/page'; // Import rankAnimals
 
 const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,20 +19,18 @@ const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
                 <span className="arrow">{isOpen ? '▼' : '▶'}</span>
             </div>
    
-                <div className="accordion-content" id = {isOpen ? "open" : ""} style={{ maxHeight: isOpen ? '1000px' : '0', overflow: 'hidden' }}>
-                    {options.map(option => (
-                        <label key={option}>
-                            <input
-                                type="checkbox"
-                                onChange={() => onSelect(option)}
-                                checked={selectedOptions.includes(option)}
-                            />
-                            {option}
-                        </label>
-                    ))}
-                
-                </div>
-            
+            <div className="accordion-content" id = {isOpen ? "open" : ""} style={{ maxHeight: isOpen ? '1000px' : '0', overflow: 'hidden' }}>
+                {options.map(option => (
+                    <label key={option}>
+                        <input
+                            type="checkbox"
+                            onChange={() => onSelect(option)}
+                            checked={selectedOptions.includes(option)}
+                        />
+                        {option}
+                    </label>
+                ))}
+            </div>
         </div>
     );
 };
@@ -64,7 +63,6 @@ const Preferences = () => {
         }
     ];
 
-
     const [selectedOptions, setSelectedOptions] = useState({});
 
     const handleSelectOption = (title, option) => {
@@ -77,47 +75,47 @@ const Preferences = () => {
         });
     };
 
-
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission
-        //alert('Preferences saved! ' + JSON.stringify(selectedOptions));
+        // Save preferences to localStorage
         localStorage.setItem('preferences', JSON.stringify(selectedOptions));
-        //To Get Data in JSON form Use: 
+
+        // Get the preferences from localStorage
         const data = localStorage.getItem('preferences');
-        alert(data);
-        
         const parseData = JSON.parse(data);
-        // Access the "Age" preferences (which is an array)
-        const agePreferences = parseData["Age"];
-        alert(agePreferences);
-        const goodWithPetsPreferences = parseData["Good With Pets?"];
-        alert(goodWithPetsPreferences);
 
-        // If 'Age' has any selected options, join them into a comma-separated string
+        const preferences = {
+            "Age": parseData["Age"] || [],
+            "Good With Pets?": parseData["Good With Pets?"] || []
+        };
 
-        //const ageText = parseData.Age ? parseData.Age.join(', ') : 'No Age selected';
-        //alert(ageText);
+        // Call the ranking function
+        const rankedAnimalsList = await rankAnimals(preferences);
 
-        //const goodWithText = parseData["Good With Pets?"] ? parseData["Good With Pets?"].join(', ') : 'No pets selected';
-        //alert(goodWithText);
+        // Display the ranked animals
+        console.log("Ranked Animals: ", rankedAnimalsList);
 
-        //May have to initialize or deal with null preferences in the future
+        // Optionally: Store ranked animals in state if you want to display them on the page
+        // setRankedAnimals(rankedAnimalsList);
     };
 
     return (
         <div>
             <Navbar title='Preferences'/>
             <div className="container">
-                
                 <div className="left-section"></div>
                 <div className="center-section">
                     <div className="buttonSection">
                         <form id="preferencesForm" onSubmit={handleSubmit}>
                             <div className="accordion">
                                 {preferenceOptions.map(preference => (
-                                    <AccordionItem key={preference.title} title={preference.title} options={preference.options} selectedOptions={selectedOptions[preference.title] || []} onSelect={(option) => handleSelectOption(preference.title, option)}/>
+                                    <AccordionItem 
+                                        key={preference.title} 
+                                        title={preference.title} 
+                                        options={preference.options} 
+                                        selectedOptions={selectedOptions[preference.title] || []} 
+                                        onSelect={(option) => handleSelectOption(preference.title, option)} 
+                                    />
                                 ))}
                             </div>
                             <button type="submit">Save</button>
@@ -127,7 +125,6 @@ const Preferences = () => {
                 <div className="right-section"></div>
             </div>
         </div>
-       
     );
 };
 
