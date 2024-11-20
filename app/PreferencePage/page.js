@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import './styles.css';
 import Navbar from '../navbar/navbar';
-import { rankAnimals } from '../ranked-preferences/page'; // Import rankAnimals
 
-const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
+const AccordionItem = ({ title, options, selectedOptions, onSelect }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleAccordion = () => {
@@ -14,12 +13,11 @@ const AccordionItem = ({ title, options, selectedOptions, onSelect}) => {
     return (
         <div className="accordion-item">
             <h3>{title}</h3>
-            <div className="accordion-header" id = {isOpen ? "open" : ""} onClick={toggleAccordion}>
+            <div className="accordion-header" id={isOpen ? "open" : ""} onClick={toggleAccordion}>
                 <span className="selection">{selectedOptions.length > 0 ? selectedOptions.join(', ') : 'Select'}</span>
                 <span className="arrow">{isOpen ? '▼' : '▶'}</span>
             </div>
-   
-            <div className="accordion-content" id = {isOpen ? "open" : ""} style={{ maxHeight: isOpen ? '1000px' : '0', overflow: 'hidden' }}>
+            <div className="accordion-content" id={isOpen ? "open" : ""} style={{ maxHeight: isOpen ? '1000px' : '0', overflow: 'hidden' }}>
                 {options.map(option => (
                     <label key={option}>
                         <input
@@ -77,26 +75,17 @@ const Preferences = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Form submitted");
+    
         // Save preferences to localStorage
         localStorage.setItem('preferences', JSON.stringify(selectedOptions));
-
+    
         // Get the preferences from localStorage
         const data = localStorage.getItem('preferences');
         const parseData = JSON.parse(data);
-
-        const preferences = {
-            "Age": parseData["Age"] || [],
-            "Good With Pets?": parseData["Good With Pets?"] || []
-        };
-
-        // Call the ranking function
-        const rankedAnimalsList = await rankAnimals(preferences);
-
-        // Display the ranked animals
-        console.log("Ranked Animals: ", rankedAnimalsList);
-
-        // Optionally: Store ranked animals in state if you want to display them on the page
-        // setRankedAnimals(rankedAnimalsList);
+        console.log('User Preferences: ', parseData);
+        alert(data);
+        const preferences = parseData;
     };
 
     return (

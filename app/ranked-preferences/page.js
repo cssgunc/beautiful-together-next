@@ -1,26 +1,38 @@
-// ranked-preferences/page.js
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
-const supabase = createClient('https://bdcvlsgmanecdortkjcu.supabase.co', 'YOUR_SUPABASE_ANON_KEY');
+const SUPABASE_URL = 'https://bdcvlsgmanecdortkjcu.supabase.co';
+const SUPABASE_KEY = 'your-supabase-key';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Fetch animals from the Supabase database
-const fetchAnimals = async () => {
+// Fetch animals from Supabase
+async function fetchAnimals() {
   const { data, error } = await supabase
     .from('Available Animals')
     .select('*');
-  
+
   if (error) {
     console.error("Error fetching animals:", error);
     return [];
   }
 
+  console.log("Fetched Animals:", data);
   return data;
-};
+}
 
 // Compare an animal's attributes to preferences
-const comparePreferences = (animal, preferences) => {
+function comparePreferences(animal, preferences) {
   let score = 0;
+
+  // Compare "Pet Preference"
+  if (preferences["Pet Preference"] && preferences["Pet Preference"].includes(animal["Pet Preference"])) {
+    score += 1;
+  }
+
+  // Compare "Gender"
+  if (preferences["Gender"] && preferences["Gender"].includes(animal["Gender"])) {
+    score += 1;
+  }
 
   // Compare "Age"
   if (preferences["Age"] && preferences["Age"].includes(animal["Age"])) {
@@ -32,14 +44,29 @@ const comparePreferences = (animal, preferences) => {
     score += 1;
   }
 
-  // Add more comparisons if needed
+  // Compare "Good With Kids?"
+  if (preferences["Good With Kids?"] && preferences["Good With Kids?"].includes(animal["Good With Kids?"])) {
+    score += 1;
+  }
+
+  // Compare "Special Needs"
+  if (preferences["Special Needs"] && preferences["Special Needs"].includes(animal["Special Needs"])) {
+    score += 1;
+  }
 
   return score;
-};
+}
 
 // Rank animals based on preferences
-export const rankAnimals = async (preferences) => {
+async function rankAnimals(preferences) {
+  console.log('Ranking animals with preferences:', preferences);
+
   const animals = await fetchAnimals();
+
+  if (animals.length === 0) {
+    console.log("No animals to rank.");
+    return [];
+  }
 
   // Rank animals by comparing them to preferences
   const rankedAnimals = animals.map((animal) => {
@@ -50,5 +77,23 @@ export const rankAnimals = async (preferences) => {
   // Sort animals based on the score (highest to lowest)
   rankedAnimals.sort((a, b) => b.score - a.score);
 
+  // Log ranked animals to the console
+  console.log("Ranked Animals:");
+  rankedAnimals.forEach((animal, index) => {
+    console.log(`Rank ${index + 1}: ID: ${animal.id}, Score: ${animal.score}, Name: ${animal.name}`);
+  });
+
   return rankedAnimals;
+}
+
+// Example usage
+const preferences = {
+  "Pet Preference": ["Dog", "Cat"],
+  "Gender": ["Female", "Male"],
+  "Age": ["Adult", "Puppy"],
+  "Good With Pets?": ["Yes"],
+  "Good With Kids?": ["Yes"],
+  "Special Needs": ["None"]
 };
+
+// rankAnimals(preferences);
