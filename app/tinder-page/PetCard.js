@@ -38,7 +38,7 @@ const iconMap = {
   Weight: Scale,
   "Good With Cats?": Pets,
   "Is Cat DeClawed?": Pets,
-  "Litter Name": FamilyHome,
+  "Litter Name": House,
   "Good With Kids?": ChildCare,
   Foster: House,
   "Good With Dogs?": Pets,
