@@ -4,10 +4,10 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { createClient } from '@supabase/supabase-js';
 import { useState, useEffect } from 'react';
-import { fetchPetData } from '@app/fetchPetData/fetchPetData';
+
 // Initialize Supabase client
-const supabaseUrl = process.env.local.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.local.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function Home() {

@@ -7,7 +7,7 @@ import os
 from dotenv import dotenv_values
 
 # Supabase credentials
-config = dotenv_values(".env.local")
+config = dotenv_values(".env")
 SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
 SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
 

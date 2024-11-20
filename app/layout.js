@@ -70,14 +70,3 @@ export default function RootLayout({ children }) {
 
 }
 
-export default function RootLayout({ children }) {
-    return (
-        <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable}`}>
-                <PetDataInitializer>
-                    {children}
-                </PetDataInitializer>
-            </body>
-        </html>
-    );
-}
