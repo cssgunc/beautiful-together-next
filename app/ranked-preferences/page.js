@@ -20,38 +20,87 @@ async function fetchAnimals() {
   return data;
 }
 
-// Compare an animal's attributes to preferences
-function comparePreferences(animal, preferences) {
+// Compare animal attributes to preferences to calculate a closeness score
+function calculateClosenessScore(animal, preferences) {
   let score = 0;
 
-  // Compare "Pet Preference"
-  if (preferences["Pet Preference"] && preferences["Pet Preference"].includes(animal["Pet Preference"])) {
-    score += 1;
+  // Helper function to normalize values for case-insensitive comparison
+  const normalize = (value) => (value ? value.toString().trim().toLowerCase() : "");
+
+  // Assign weights for different attributes
+  const WEIGHTS = {
+    "dog/cat": 5, // More important comparison
+    "Breed": 3,
+    "Gender": 1,
+    "Age": 2,
+    "Good With Kids?": 1,
+    "Good With Dogs?": 1,
+    "Energy Level": 1,
+    "Special Needs": 1,
+  };
+
+  // Compare "dog/cat" (e.g., Dog or Cat)
+  if (preferences["Pet Preference"]?.length) {
+    const prefList = preferences["Pet Preference"].map(pref => normalize(pref));
+    if (!prefList.includes(normalize(animal["dog/cat"]))) {
+      score += WEIGHTS["dog/cat"];
+    }
+  }
+
+  // Compare "Breed"
+  if (preferences["Breed"]?.length) {
+    const prefList = preferences["Breed"].map(pref => normalize(pref));
+    if (!prefList.includes(normalize(animal?.tags?.Breed))) {
+      score += WEIGHTS["Breed"];
+    }
   }
 
   // Compare "Gender"
-  if (preferences["Gender"] && preferences["Gender"].includes(animal["Gender"])) {
-    score += 1;
+  if (preferences["Gender"]?.length) {
+    const prefList = preferences["Gender"].map(pref => normalize(pref));
+    if (!prefList.includes(normalize(animal?.tags?.Gender))) {
+      score += WEIGHTS["Gender"];
+    }
   }
 
   // Compare "Age"
-  if (preferences["Age"] && preferences["Age"].includes(animal["Age"])) {
-    score += 1;
-  }
-
-  // Compare "Good With Pets?"
-  if (preferences["Good With Pets?"] && preferences["Good With Pets?"].includes(animal["Good With Pets?"])) {
-    score += 1;
+  if (preferences["Age"]?.length) {
+    const prefList = preferences["Age"].map(pref => normalize(pref));
+    if (!prefList.some(age => normalize(animal?.tags?.Age).includes(age))) {
+      score += WEIGHTS["Age"];
+    }
   }
 
   // Compare "Good With Kids?"
-  if (preferences["Good With Kids?"] && preferences["Good With Kids?"].includes(animal["Good With Kids?"])) {
-    score += 1;
+  if (preferences["Good With Kids?"]?.length) {
+    const prefList = preferences["Good With Kids?"]?.map(pref => normalize(pref));
+    if (!prefList.some(pref => normalize(animal?.tags?.["Good With Kids?"]).includes(pref))) {
+      score += WEIGHTS["Good With Kids?"];
+    }
+  }
+
+  // Compare "Good With Dogs?"
+  if (preferences["Good With Dogs?"]?.length) {
+    const prefList = preferences["Good With Dogs?"]?.map(pref => normalize(pref));
+    if (!prefList.some(pref => normalize(animal?.tags?.["Good With Dogs?"]).includes(pref))) {
+      score += WEIGHTS["Good With Dogs?"];
+    }
+  }
+
+  // Compare "Energy Level"
+  if (preferences["Energy Level"]?.length) {
+    const prefList = preferences["Energy Level"].map(pref => normalize(pref));
+    if (!prefList.includes(normalize(animal?.tags?.["Energy Level"]))) {
+      score += WEIGHTS["Energy Level"];
+    }
   }
 
   // Compare "Special Needs"
-  if (preferences["Special Needs"] && preferences["Special Needs"].includes(animal["Special Needs"])) {
-    score += 1;
+  if (preferences["Special Needs"]?.length) {
+    const prefList = preferences["Special Needs"].map(pref => normalize(pref));
+    if (!prefList.includes(normalize(animal?.tags?.["Special Needs"]))) {
+      score += WEIGHTS["Special Needs"];
+    }
   }
 
   return score;
@@ -68,14 +117,14 @@ async function rankAnimals(preferences) {
     return [];
   }
 
-  // Rank animals by comparing them to preferences
+  // Rank animals by calculating their closeness score to preferences
   const rankedAnimals = animals.map((animal) => {
-    const score = comparePreferences(animal, preferences);
+    const score = calculateClosenessScore(animal, preferences);
     return { ...animal, score };
   });
 
-  // Sort animals based on the score (highest to lowest)
-  rankedAnimals.sort((a, b) => b.score - a.score);
+  // Sort animals based on the score (lowest to highest)
+  rankedAnimals.sort((a, b) => a.score - b.score);
 
   // Log ranked animals to the console
   console.log("Ranked Animals:");
@@ -83,16 +132,21 @@ async function rankAnimals(preferences) {
     console.log(`Rank ${index + 1}: ID: ${animal.id}, Score: ${animal.score}, Name: ${animal.name}`);
   });
 
+  // Verify if the actual results align with expected rankings
+  console.log("Final Ranked Animals:", rankedAnimals);
+
   return rankedAnimals;
 }
 
 // Example usage
 const preferences = {
-  "Pet Preference": ["Dog", "Cat"],
-  "Gender": ["Female", "Male"],
-  "Age": ["Adult", "Puppy"],
-  "Good With Pets?": ["Yes"],
-  "Good With Kids?": ["Yes"],
+  "Pet Preference": ["Dog"],
+  "Breed": ["Terrier"],
+  "Gender": ["Male"],
+  "Age": ["Youth"],
+  "Good With Kids?": ["I Like All Kids"],
+  "Good With Dogs?": ["I Like All Dogs"],
+  "Energy Level": ["Gentle and Friendly"],
   "Special Needs": ["None"]
 };
 
@@ -100,6 +154,10 @@ const preferences = {
 rankAnimals(preferences)
   .then(rankedAnimals => {
     console.log("Final Ranked Animals:", rankedAnimals);
+    // Verify if the actual results align with the expected rankings
+    rankedAnimals.forEach((animal, index) => {
+      console.log(`Verification - Rank ${index + 1}: ID: ${animal.id}, Score: ${animal.score}, Name: ${animal.name}`);
+    });
   })
   .catch(error => {
     console.error("Error ranking animals:", error);
