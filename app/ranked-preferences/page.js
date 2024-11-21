@@ -126,10 +126,10 @@ async function rankAnimals(preferences) {
   // Sort animals based on the score (lowest to highest)
   rankedAnimals.sort((a, b) => a.score - b.score);
 
-  // Log ranked animals to the console
+  // Log ranked animals to the console with additional details
   console.log("Ranked Animals:");
   rankedAnimals.forEach((animal, index) => {
-    console.log(`Rank ${index + 1}: ID: ${animal.id}, Score: ${animal.score}, Name: ${animal.name}`);
+    console.log(`Rank ${index + 1}: ID: ${animal.id}, Name: ${animal.name}, Score: ${animal.score}, Breed: ${animal?.tags?.Breed}, Gender: ${animal?.tags?.Gender}`);
   });
 
   // Verify if the actual results align with expected rankings
@@ -140,9 +140,9 @@ async function rankAnimals(preferences) {
 
 // Example usage
 const preferences = {
-  "Pet Preference": ["Dog"],
+  "Pet Preference": ["Cat"],
   "Breed": ["Terrier"],
-  "Gender": ["Male"],
+  "Gender": ["Female"],
   "Age": ["Youth"],
   "Good With Kids?": ["I Like All Kids"],
   "Good With Dogs?": ["I Like All Dogs"],
@@ -156,7 +156,7 @@ rankAnimals(preferences)
     console.log("Final Ranked Animals:", rankedAnimals);
     // Verify if the actual results align with the expected rankings
     rankedAnimals.forEach((animal, index) => {
-      console.log(`Verification - Rank ${index + 1}: ID: ${animal.id}, Score: ${animal.score}, Name: ${animal.name}`);
+      console.log(`Verification - Rank ${index + 1}: ID: ${animal.id}, Name: ${animal.name}, Score: ${animal.score}`);
     });
   })
   .catch(error => {
