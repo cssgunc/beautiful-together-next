@@ -41,20 +41,21 @@ export default function SavedPetsPage() {
 
   async function updatePetData(){
     try {
-      const data = await fetchPetData() //replace with whatever middleware they're developing
+      const data = JSON.parse(localStorage.getItem("pet-data")).data; //replace with whatever middleware they're developing
+      console.log(data)
       const cookieData = await getSavedAnimals()
+      console.log(cookieData)
       if (data){
         let saved = cookieData.map((id) => data.find((pet) => pet.id == id))
         saved.reverse() // most recent saved at the top
         setPets(saved)
-        console.log(saved)
+        console.log("saved", saved)
         setPageLoaded(true)
         
       }
   
     } catch (error) {
       console.error("Error fetching pet data", error.message);
-      setErrorMessage('Failed to Connect to Supabase.');
     }
   }
 

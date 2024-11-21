@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { saveAnimal} from '../savedPetsCookie/savedPetsCookie';
 import {
   Card,
   CardContent,
@@ -48,7 +49,7 @@ const iconMap = {
 const defaultImage =
   "https://beautifultogethersanctuary.com/wp-content/uploads/2023/09/btogether-new-sanctuary-286x116-1.png";
 
-const PetCard = ({ petsQueue }) => {
+const PetCard = ({ petsQueue, adoptNotification }) => {
   const [currentPet, setCurrentPet] = useState(petsQueue[0]);
   const [animation, setAnimation] = useState(""); // Track animation type
   const [index, setIndex] = useState(0);
@@ -70,8 +71,11 @@ const PetCard = ({ petsQueue }) => {
 
   const handleAdopt = () => {
     if (index + 1 < petsQueue.length) {
-      setIndex(index + 1); // Move to the next pet
+      adoptNotification(petsQueue[index].name)
+      saveAnimal(petsQueue[index].id) //add id to cookie
+      setIndex(index + 1); // Move to the next pe
       console.log("Adopted pet!");
+      
     }
   };
 

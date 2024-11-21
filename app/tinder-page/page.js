@@ -9,6 +9,7 @@ import { petsData, petsData2 } from "./petsData";
 import { fetchPetData } from "../fetchPetData/fetchPetData";
 import Notification from "./Notification";
 import Navbar from "../navbar/navbar";
+import {getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
 
 const theme = createTheme({
   palette: {
@@ -29,10 +30,20 @@ const defaultImage =
 export default function Home() {
   const petsQueue = JSON.parse(localStorage.getItem("pet-data")).data;
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
 
   // Load pet data once on initial render
-  const handleAdopt = () => {
+  const adoptNotification = (name) => {
     console.log("Adopted pet!");
+    addNotification(name)
+  };
+
+  const addNotification = (name) => {
+    const id = Date.now();
+    setNotifications((prev) => [...prev, {id, name}])
+  }
+  const removeNotification = (id) => {
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
   // Function to simulate the pass action
@@ -74,7 +85,17 @@ export default function Home() {
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Box sx={{ width: "90%", maxWidth: "400px" }}>
                 {petsQueue[0] ? (
-                  <PetCard petsQueue={petsQueue} />
+                  <div>
+                    <PetCard petsQueue={petsQueue} adoptNotification = {adoptNotification} />
+                    <Box sx={{ bottom: 20, right: 20, zIndex: 1000 }}>
+                    {
+                      notifications.map((n) => (
+                        <Notification key = {n.id} name = {n.name} onClose = {() => removeNotification(n.id)}/>
+                      )
+                      )
+                    } 
+                  </Box>   
+                  </div>
                 ) : (
                   <Box
                     sx={{
