@@ -55,14 +55,14 @@ unwanted_images = [
     'btogether-new-sanctuary-286x116-1.png'
 ]
 
-def is_allowed_image(img_url):
-    # Check if the image URL contains any unwanted characters
-    if '\u202f' in img_url:
-        return False
-    for unwanted in unwanted_images:
-        if unwanted in img_url:
-            return False
-    return True
+# def is_allowed_image(img_url):
+#     # Check if the image URL contains any unwanted characters
+#     if '\u202f' in img_url:
+#         return False
+#     for unwanted in unwanted_images:
+#         if unwanted in img_url:
+#             return False
+#     return True
 
 # Scrape images for each dog page
 def get_images(url):
@@ -82,10 +82,12 @@ def get_images(url):
         if img_url.startswith('/'):
             img_url = url + img_url
         
-        # Check if the image is allowed
-        if is_allowed_image(img_url):
-            img_list.append(img_url)
-    
+        # Append links after removing break character.
+        new_img = img_url.replace('\u202f', '')
+        for unwanted in unwanted_images:
+            if not unwanted in new_img:
+                img_list.append(new_img)
+                
     return img_list
 
 # Store fields for each dog and fetch their images
