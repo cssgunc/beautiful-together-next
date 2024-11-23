@@ -12,7 +12,7 @@ SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
 SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
 
 # The table that is edited
-table_to_update = 'Available Animals'
+table_to_update = 'testing'
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
