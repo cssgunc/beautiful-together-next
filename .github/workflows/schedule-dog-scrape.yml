@@ -29,6 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install supabase
           pip install python-dotenv
+          python -m pip install requests
 
       # Run the scraping script
       - name: Run Dog Scrape
