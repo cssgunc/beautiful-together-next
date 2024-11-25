@@ -30,6 +30,7 @@ jobs:
           pip install supabase
           pip install python-dotenv
           python -m pip install requests
+          python -m pip install beautifulsoup4
 
       # Run the scraping script
       - name: Run Dog Scrape
