@@ -50,23 +50,6 @@ def get_tags(url) -> dict[str, str]:
 
     return labels
 
-# Add unwanted images (including \u202f) to the exclusion list
-unwanted_images = [
-    'buzz-rescue-mark.png',
-    'amazon-wishlist.jpg',
-    'Vet-Naturals-1.png',
-    'btogether-new-sanctuary-286x116-1.png'
-]
-
-#def is_allowed_image(img_url):
-#    # Check if the image URL contains any unwanted characters
-#    if '\u202f' in img_url:
-#        return False
-#    for unwanted in unwanted_images:
-#        if unwanted in img_url:
-#            return False
-#    return True
-
 # Scrape images for each cat page
 def get_images(url):
     response = requests.get(url)
@@ -74,22 +57,16 @@ def get_images(url):
     img_list = []
     
     # Find all images for the cat on its page
-    for img in soup.find_all('img', src=True):
-        img_url = img['src']
-        
-        # If the image is base64, skip it
-        if img_url.startswith('data:'):
-            continue
+    # Note: not sure why, but the class here is also dogPics
+    for img in soup.find_all('a', class_='dogPics'):
+        img_url = img['href']
         
         # If the image starts with '/', it's relative, so append the base URL
         if img_url.startswith('/'):
             img_url = url + img_url
         
-        # Check if the image is allowed
-        new_img = img_url.replace('\u202f', '')
-        for unwanted in unwanted_images:
-            if not unwanted in new_img:
-                img_list.append(new_img)
+        # Append image link
+        img_list.append(img_url)
     
     return img_list
 
