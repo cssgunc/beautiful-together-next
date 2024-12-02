@@ -33,7 +33,7 @@ jobs:
           python -m pip install beautifulsoup4
 
       # Run the scraping script
-      - name: Run Dog Scrape
+      - name: Run Scraping
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
