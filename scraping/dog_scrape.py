@@ -52,6 +52,8 @@ def get_images(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     img_list = []
+    # TESTING PURPOSES
+    cropped = True
     
     # Find all images for the dog on its page
     for img in soup.find_all('a', class_='dogPics'):
@@ -60,6 +62,16 @@ def get_images(url):
         # If the image starts with '/', it's relative, so append the base URL
         if img_url.startswith('/'):
             img_url = url + img_url
+        
+        # If cropped, then get the 300x300px version.
+        if cropped:
+            img_url_arr = img_url.split('.')
+            if img_url_arr[-2].endswith('-scaled'):
+                img_url_arr[-2] = img_url_arr[-2][:-7]
+            elif img_url_arr[-2].endswith('-rotated'):
+                img_url_arr[-2] = img_url_arr[-2][:-8]
+            img_url_arr[-2] += "-300x300"
+            img_url = ".".join(img_url_arr)
         
         # Append image link
         img_list.append(img_url)
