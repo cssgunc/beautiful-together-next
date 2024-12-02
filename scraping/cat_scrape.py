@@ -70,10 +70,7 @@ def get_images(url):
         # If cropped, then get the 300x300px version.
         if cropped:
             img_url_arr = img_url.split('.')
-            if img_url_arr[-2].endswith('-scaled'):
-                img_url_arr[-2] = img_url_arr[-2][:-7]
-            elif img_url_arr[-2].endswith('-rotated'):
-                img_url_arr[-2] = img_url_arr[-2][:-8]
+            img_url_arr[-2] = re.sub('-(scaled|rotated)$', '', img_url_arr[-2])
             img_url_arr[-2] += "-300x300"
             img_url = ".".join(img_url_arr)
         
