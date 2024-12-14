@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import styles from "./page.module.css";
-import { createClient } from '@supabase/supabase-js';
-import { useState, useEffect } from 'react';
-import { fetchPetData } from "@/app/fetchPetData/fetchPetData";
+import { createClient } from "@supabase/supabase-js";
+import { useState, useEffect } from "react";
+import { fetchPetData } from "../utils/fetchPetData";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -15,10 +15,9 @@ export default function Home() {
   const [petCount, setPetCount] = useState(-1);
   const [petData, setPetData] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Loading Pets...")
-  const headers = ['Name', 'Dog/Cat', 'Images', 'Tags'];
-  const databaseHeaders = ['name', 'dog/cat', 'images', 'tags'];
-
+  const [errorMessage, setErrorMessage] = useState("Loading Pets...");
+  const headers = ["Name", "Dog/Cat", "Images", "Tags"];
+  const databaseHeaders = ["name", "dog/cat", "images", "tags"];
 
   // ping
   /*
@@ -42,19 +41,18 @@ export default function Home() {
   */
 
   //new function calling the database
-  async function updatePetData(){
+  async function updatePetData() {
     try {
-      const data = await fetchPetData()
-      if (data){
-        console.log("Data retrived:", data)
-        console.log("length: ", data.length)
+      const data = await fetchPetData();
+      if (data) {
+        console.log("Data retrived:", data);
+        console.log("length: ", data.length);
         setPetCount(data.length);
         setPetData(data);
       }
-
     } catch (error) {
       console.error("Error fetching pet data", error.message);
-      setErrorMessage('Failed to Connect to Supabase.');
+      setErrorMessage("Failed to Connect to Supabase.");
     }
   }
 
@@ -68,24 +66,23 @@ export default function Home() {
   //rewrote to use useEffect when fetching data
   useEffect(() => {
     updatePetData();
-  }, [])
+  }, []);
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-
         <Image
-            className={styles.logo}
-            src="/logo.png"
-            alt="bt_logo"
-            width={170}
-            height={70}
-            priority
-          />
+          className={styles.logo}
+          src="/logo.png"
+          alt="bt_logo"
+          width={170}
+          height={70}
+          priority
+        />
 
         {petCount > 0 ? (
           <div>
-          <ol>Total Number of Pets: {petCount}</ol>
+            <ol>Total Number of Pets: {petCount}</ol>
             <table>
               <thead>
                 <tr>
@@ -100,17 +97,17 @@ export default function Home() {
                   <tr key={index}>
                     {databaseHeaders.map((field) => (
                       <td key={field} className="wrap-cell">
-                        {field === 'images' && row[field] && row[field].length > 0 ? (
-                          row[field].map((imgUrl) => (
-                            <img src={imgUrl}></img>
-                          ))
-                        ) : field === 'tags' && row[field] ? (
-                          Object.entries(row[field]).map(([tag, value]) => (
-                            <p>{tag}: {value}</p>
-                          ))
-                        ) : (
-                          row[field]
-                        )}
+                        {field === "images" &&
+                        row[field] &&
+                        row[field].length > 0
+                          ? row[field].map((imgUrl) => <img src={imgUrl}></img>)
+                          : field === "tags" && row[field]
+                          ? Object.entries(row[field]).map(([tag, value]) => (
+                              <p>
+                                {tag}: {value}
+                              </p>
+                            ))
+                          : row[field]}
                       </td>
                     ))}
                   </tr>
@@ -123,17 +120,11 @@ export default function Home() {
         ) : (
           <ol>{errorMessage}</ol>
         )}
-        <div className={styles.ctas}>
-          {}
-        </div>
-        
+        <div className={styles.ctas}>{}</div>
 
         {/*<FetchAnimalsDataTest/>  /*<--- was used for testing */}
-
       </main>
-      <footer className={styles.footer}>
-        {}
-      </footer>
+      <footer className={styles.footer}>{}</footer>
     </div>
   );
 }
