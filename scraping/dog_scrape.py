@@ -4,12 +4,12 @@ from supabase import create_client, Client
 import re
 import pprint
 import os
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 # Supabase credentials
-load_dotenv()
-SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+config = dotenv_values(".env.local")
+SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
+SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
 
 # The table that is edited
 table_to_update = 'Available Animals'
@@ -47,45 +47,32 @@ def get_tags(url) -> dict[str, str]:
 
     return labels
 
-# Add unwanted images (including \u202f) to the exclusion list
-unwanted_images = [
-    'buzz-rescue-mark.png',
-    'amazon-wishlist.jpg',
-    'Vet-Naturals-1.png',
-    'btogether-new-sanctuary-286x116-1.png'
-]
-
-def is_allowed_image(img_url):
-    # Check if the image URL contains any unwanted characters
-    if '\u202f' in img_url:
-        return False
-    for unwanted in unwanted_images:
-        if unwanted in img_url:
-            return False
-    return True
-
 # Scrape images for each dog page
 def get_images(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     img_list = []
+    # TESTING PURPOSES
+    cropped = True
     
     # Find all images for the dog on its page
-    for img in soup.find_all('img', src=True):
-        img_url = img['src']
-        
-        # If the image is base64, skip it
-        if img_url.startswith('data:'):
-            continue
+    for img in soup.find_all('a', class_='dogPics'):
+        img_url = img['href']
         
         # If the image starts with '/', it's relative, so append the base URL
         if img_url.startswith('/'):
             img_url = url + img_url
         
-        # Check if the image is allowed
-        if is_allowed_image(img_url):
-            img_list.append(img_url)
-    
+        # If cropped, then get the 300x300px version.
+        if cropped:
+            img_url_arr = img_url.split('.')
+            img_url_arr[-2] = re.sub('-(scaled|rotated)$', '', img_url_arr[-2])
+            img_url_arr[-2] += "-300x300"
+            img_url = ".".join(img_url_arr)
+        
+        # Append image link
+        img_list.append(img_url)
+                
     return img_list
 
 # Store fields for each dog and fetch their images
