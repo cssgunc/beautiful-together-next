@@ -7,10 +7,11 @@ import os
 from dotenv import dotenv_values
 
 # Supabase credentials
-config = dotenv_values(".env.local")
-SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
-SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
-
+# config = dotenv_values(".env.local")
+# SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
+# SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
+SUPABASE_URL = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
+SUPABASE_KEY =  os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
 
 
 # The table that is edited
