@@ -1,0 +1,42 @@
+name: Daily Scraping
+
+on:
+  schedule:
+    # Runs every 24 hours at midnight UTC
+    - cron: '0 0 * * *'
+
+  workflow_dispatch: # Allows you to manually trigger the workflow
+    inputs: {}
+
+jobs:
+  run-dog-scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install supabase
+          pip install python-dotenv
+          python -m pip install requests
+          python -m pip install beautifulsoup4
+
+      # Run the scraping script
+      - name: Run Scraping
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          python scraping/dog_scrape.py
+          python scraping/cat_scrape.py
