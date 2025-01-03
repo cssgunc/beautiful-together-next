@@ -1,9 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  AppBar,
-  Toolbar,
-  Typography,
   Box,
   Container,
   Card,
@@ -14,14 +11,12 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
-  IconButton,
+  Typography,
   Divider,
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {
   ExpandMore,
-  Favorite,
-  Menu,
   Pets,
   WcOutlined,
   Cake,
@@ -34,10 +29,10 @@ import Navbar from '../navbar/navbar';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4caf50', // green
+      main: '#4caf50',
     },
     secondary: {
-      main: '#f44336', // red
+      main: '#f44336',
     },
     background: {
       default: '#F8F6F3',
@@ -45,20 +40,25 @@ const theme = createTheme({
   },
 });
 
-const PreferenceSection = ({ title, options, icon }) => {
-  const [selected, setSelected] = useState([]);
+const PreferenceSection = ({ title, options, icon, savedPreferences, onChange }) => {
+  const [selected, setSelected] = useState(savedPreferences[title] || []);
 
   const handleChange = (option) => {
-    setSelected(prev => 
-      prev.includes(option)
-        ? prev.filter(item => item !== option)
-        : [...prev, option]
-    );
+    const updatedSelected = selected.includes(option)
+      ? selected.filter((item) => item !== option)
+      : [...selected, option];
+
+    setSelected(updatedSelected);
+    onChange(title, updatedSelected);
   };
+
+  useEffect(() => {
+    setSelected(savedPreferences[title] || []);
+  }, [savedPreferences, title]);
 
   return (
     <Box>
-      <Accordion 
+      <Accordion
         elevation={0}
         sx={{
           '&:before': {
@@ -120,65 +120,90 @@ const Preferences = () => {
     {
       title: 'Pet Preference',
       options: ['Cats', 'Dogs'],
-      icon: <Pets color="primary" />
+      icon: <Pets color="primary" />,
     },
     {
       title: 'Gender',
       options: ['Male', 'Female'],
-      icon: <WcOutlined color="primary" />
+      icon: <WcOutlined color="primary" />,
     },
     {
       title: 'Age',
-      options: ['Baby (0-5 Months)', 'Puppy (5-24 Months)', 'Youth (2-5 Years)', 'Adult (5-9 Years)', 'Senior (9+ Years)'],
-      icon: <Cake color="primary" />
+      options: [
+        'Baby (0-5 Months)',
+        'Puppy (5-24 Months)',
+        'Youth (2-5 Years)',
+        'Adult (5-9 Years)',
+        'Senior (9+ Years)',
+      ],
+      icon: <Cake color="primary" />,
     },
     {
       title: 'Good With Pets?',
       options: ['Big Dogs', 'Small Dogs', 'Cats'],
-      icon: <Checklist color="primary" />
+      icon: <Checklist color="primary" />,
     },
     {
       title: 'Good With Kids?',
       options: ['Kids Over 6', 'Kids Over 10'],
-      icon: <ChildCare color="primary" />
+      icon: <ChildCare color="primary" />,
     },
     {
       title: 'Special Needs',
       options: ['Yes', 'No'],
-      icon: <MedicalInformation color="primary" />
-    }
+      icon: <MedicalInformation color="primary" />,
+    },
   ];
+
+  // const [preferences, setPreferences] = useState(() => {
+  //   // Retrieve saved preferences from localStorage
+  //   const saved = localStorage.getItem('preferences');
+  //   return saved ? JSON.parse(saved) : {};
+  // });
+
+  const [preferences, setPreferences] = useState({});
+
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('preferences') : null;
+    if (saved) {
+      setPreferences(JSON.parse(saved));
+    } 
+  }, []);
+
+
+  const handlePreferenceChange = (title, selectedOptions) => {
+    setPreferences((prev) => ({
+      ...prev,
+      [title]: selectedOptions,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
+    // Save preferences to localStorage
+    localStorage.setItem('preferences', JSON.stringify(preferences));
     alert('Preferences saved!');
   };
+
+  useEffect(() => {
+    // Autofill the form with saved preferences when the page loads
+    const saved = localStorage.getItem('preferences');
+    if (saved) {
+      setPreferences(JSON.parse(saved));
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
-        {/* <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Beautiful Together Animal Sanctuary
-            </Typography>
-            <IconButton color="inherit">
-              <Favorite />
-            </IconButton>
-            <IconButton color="inherit">
-              <Menu />
-            </IconButton>
-          </Toolbar>
-        </AppBar> */}
         <Navbar />
         <Container maxWidth="sm" sx={{ mt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '90%', maxWidth: '400px' }}>
-              <Card 
-                component="form" 
+              <Card
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ 
+                sx={{
                   width: '100%',
                   bgcolor: '#FFFFFF',
                   borderRadius: '16px',
@@ -192,38 +217,38 @@ const Preferences = () => {
                     padding: '16px',
                   }}
                 >
-                  <Typography variant="h6">
-                    Your Preferences
-                  </Typography>
+                  <Typography variant="h6">Your Preferences</Typography>
                 </Box>
-                
-                {preferenceOptions.map((preference, index) => (
+
+                {preferenceOptions.map((preference) => (
                   <PreferenceSection
                     key={preference.title}
                     title={preference.title}
                     options={preference.options}
                     icon={preference.icon}
+                    savedPreferences={preferences}
+                    onChange={handlePreferenceChange}
                   />
                 ))}
 
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                    <Button 
-                        type="submit" 
-                        variant="contained" 
-                        sx={{ 
-                            width: '200px',
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            fontSize: '1.1rem',
-                            color: 'white',
-                            bgcolor: '#f4900c', // Set orange background
-                            '&:hover': {
-                            bgcolor: '#d67d0a'  // Slightly darker orange for hover
-                            }
-                        }}
-                    >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      width: '200px',
+                      borderRadius: '8px',
+                      textTransform: 'none',
+                      fontSize: '1.1rem',
+                      color: 'white',
+                      bgcolor: '#f4900c',
+                      '&:hover': {
+                        bgcolor: '#d67d0a',
+                      },
+                    }}
+                  >
                     Save Preferences
-                    </Button>
+                  </Button>
                 </Box>
               </Card>
             </Box>

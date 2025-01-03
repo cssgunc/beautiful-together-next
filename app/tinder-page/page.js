@@ -6,10 +6,11 @@ import { Box, Container, Card, Typography } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PetCard from "./PetCard";
 import { petsData, petsData2 } from "./petsData";
-import { fetchPetData } from "../fetchPetData/fetchPetData";
+import { fetchOrderedPets } from "../fetchOrderedPets/fetchOrderedPets";
 import Notification from "./Notification";
 import Navbar from "../navbar/navbar";
 import {getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
+
 
 const theme = createTheme({
   palette: {
@@ -28,7 +29,25 @@ const defaultImage =
   "https://beautifultogethersanctuary.com/wp-content/uploads/2023/09/btogether-new-sanctuary-286x116-1.png";
 
 export default function Home() {
-  const petsQueue = JSON.parse(localStorage.getItem("pet-data")).data;
+  // const petsQueue = JSON.parse(localStorage.getItem("pet-data")).data;
+  const [petsQueue, setPetsQueue] = useState([]); // Define state to store petsQueue
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const petsQueueData = await fetchOrderedPets();
+        setPetsQueue(petsQueueData); // Update state with fetched data
+        //console.log("PetsQueue set");
+      } catch (error) {
+        console.error('Error fetching pets data:', error);
+      }
+    };
+
+    fetchData(); // Call the asynchronous function
+  }, []);
+  
+  
+
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
 

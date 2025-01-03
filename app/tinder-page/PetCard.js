@@ -176,9 +176,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
           <Typography variant="h6" component="span">
             {currentPet.name}
           </Typography>
-          <Typography variant="h6" component="span" sx={{ ml: 1 }}>
-            {currentPet.age}
-          </Typography>
+          
         </Box>
       </Box>
       <CardContent>
