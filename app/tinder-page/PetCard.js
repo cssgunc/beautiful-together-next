@@ -1,6 +1,5 @@
-"use client";
 import React, { useState, useEffect } from "react";
-import { saveAnimal} from '../savedPetsCookie/savedPetsCookie';
+import { saveAnimal } from "../savedPetsCookie/savedPetsCookie";
 import {
   Card,
   CardContent,
@@ -27,7 +26,6 @@ import {
   House,
 } from "@mui/icons-material";
 
-// Map icons to traits
 const iconMap = {
   Age: Cake,
   Breed: Pets,
@@ -54,40 +52,33 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const [animation, setAnimation] = useState(""); // Track animation type
   const [index, setIndex] = useState(0);
 
-  // Handle pet swipe (pass/adopt)
   const handleSwipe = (direction) => {
     setAnimation(direction);
     setTimeout(() => {
-      // Update the pet after the animation
       if (direction === "swipe-left") {
         handlePass();
       }
       if (direction === "swipe-right") {
         handleAdopt();
       }
-      setAnimation(""); // Reset animation after swipe
-    }, 500); // Wait for the animation to finish
+      setAnimation("");
+    }, 500);
   };
 
   const handleAdopt = () => {
     if (index + 1 < petsQueue.length) {
-      adoptNotification(petsQueue[index].name)
-      saveAnimal(petsQueue[index].id) //add id to cookie
-      setIndex(index + 1); // Move to the next pe
-      console.log("Adopted pet!");
-      
+      adoptNotification(petsQueue[index].name);
+      saveAnimal(petsQueue[index].id);
+      setIndex(index + 1);
     }
   };
 
-  // Function to simulate the pass action
   const handlePass = () => {
     if (index + 1 < petsQueue.length) {
-      setIndex(index + 1); // Move to the next pet
-      console.log("Passed on pet");
+      setIndex(index + 1);
     }
   };
 
-  // Transform pet data to match PetCard format
   const transformPetData = (pet) => {
     if (!pet) return null;
 
@@ -137,11 +128,15 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
     <Card
       sx={{
         width: "100%",
+        height: "450px",
         bgcolor: "#FFFFFF",
         borderRadius: "16px",
         overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between", // Maintain spacing between sections
         transition:
-          animation == "swipe-left" || animation == "swipe-right"
+          animation === "swipe-left" || animation === "swipe-right"
             ? "transform 0.4s ease, opacity 0.2s ease"
             : "opacity 0.2s ease",
         transform:
@@ -150,14 +145,15 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
             : animation === "swipe-right"
             ? "translateX(100%)"
             : "translateX(0)",
-        opacity: animation == "reversing" ? 0 : animation ? 0 : 1,
+        opacity: animation ? 0 : 1,
         zIndex: animation ? 2 : 1,
       }}
     >
+      {/* Pet Image Section */}
       <Box sx={{ position: "relative" }}>
         <CardMedia
           component="img"
-          height="300"
+          height="200"
           image={currentPet.image}
           alt={currentPet.name}
           sx={{ objectFit: "cover" }}
@@ -168,7 +164,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
             bottom: 0,
             left: 0,
             right: 0,
-            bgcolor: "rgba(76, 175, 80, 0.9)", // Slightly transparent green
+            bgcolor: "rgba(76, 175, 80, 0.9)",
             color: "white",
             padding: "8px 16px",
           }}
@@ -176,10 +172,11 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
           <Typography variant="h6" component="span">
             {currentPet.name}
           </Typography>
-          
         </Box>
       </Box>
-      <CardContent>
+
+      {/* Card Content Section */}
+      <CardContent sx={{ flex: 1, overflow: "hidden" }}>
         <Grid container spacing={1} sx={{ mb: 2 }}>
           {Array.isArray(currentPet.traits) &&
             currentPet.traits.map((trait, index) => {
@@ -190,22 +187,25 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
                     icon={<IconComponent style={{ color: "#f4900c" }} />}
                     label={trait.text}
                     size="small"
-                    sx={{
-                      "& .MuiChip-icon": {
-                        color: "#f4900c",
-                      },
-                    }}
                   />
                 </Grid>
               );
             })}
         </Grid>
-
         <Typography variant="body2" color="text.secondary">
           {currentPet.summary}
         </Typography>
       </CardContent>
-      <Box sx={{ display: "flex", justifyContent: "space-between", p: 2 }}>
+
+      {/* Buttons Section */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "16px",
+          borderTop: "1px solid #e0e0e0", // Optional separator
+        }}
+      >
         <Button
           onClick={() => handleSwipe("swipe-left")}
           variant="contained"
@@ -218,10 +218,8 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
           onClick={() => handleSwipe("swipe-right")}
           variant="contained"
           color="primary"
-          endIcon={<Favorite sx={{ color: "white" }} />} // Add white color to icon
-          sx={{
-            color: "white", // Add white color to text
-          }}
+          endIcon={<Favorite sx={{ color: "white" }} />}
+          sx={{ color: "white" }}
         >
           Like
         </Button>
