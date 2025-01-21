@@ -1,16 +1,13 @@
-// app/tinder-page/page.js
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Box, Container, Card, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Container, Typography } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PetCard from "./PetCard";
-import { petsData, petsData2 } from "./petsData";
 import { fetchOrderedPets } from "../fetchOrderedPets/fetchOrderedPets";
 import Notification from "./Notification";
 import Navbar from "../navbar/navbar";
-import {getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
-
+import { getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
 
 const theme = createTheme({
   palette: {
@@ -25,47 +22,44 @@ const theme = createTheme({
     },
   },
 });
-const defaultImage =
-  "https://beautifultogethersanctuary.com/wp-content/uploads/2023/09/btogether-new-sanctuary-286x116-1.png";
 
 export default function Home() {
-  // const petsQueue = JSON.parse(localStorage.getItem("pet-data")).data;
-  const [petsQueue, setPetsQueue] = useState([]); // Define state to store petsQueue
+  const [petsQueue, setPetsQueue] = useState([]); // State to store petsQueue
+  const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const petsQueueData = await fetchOrderedPets();
-        setPetsQueue(petsQueueData); // Update state with fetched data
-        //console.log("PetsQueue set");
+        const savedPets = await getSavedAnimals(); // Get saved pets from cookies
+        const petsData = await fetchOrderedPets(); // Fetch ordered pets
+
+        // Filter out pets that are already saved
+        const filteredPets = petsData.filter(pet => !savedPets.includes(pet.id));
+
+        setPetsQueue(filteredPets); // Update state with filtered pets
       } catch (error) {
         console.error('Error fetching pets data:', error);
       }
     };
 
-    fetchData(); // Call the asynchronous function
+    fetchData();
   }, []);
-  
-  
 
-  const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState([]);
-
-  // Load pet data once on initial render
   const adoptNotification = (name) => {
     console.log("Adopted pet!");
-    addNotification(name)
+    addNotification(name);
   };
 
   const addNotification = (name) => {
     const id = Date.now();
-    setNotifications((prev) => [...prev, {id, name}])
-  }
+    setNotifications((prev) => [...prev, { id, name }]);
+  };
+
   const removeNotification = (id) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
-  // Function to simulate the pass action
   const handlePass = () => {
     console.log("Passed on pet");
   };
@@ -95,9 +89,7 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}
-      >
+      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}>
         <Navbar />
         {!loading && (
           <Container maxWidth="sm" sx={{ mt: 4 }}>
@@ -105,15 +97,12 @@ export default function Home() {
               <Box sx={{ width: "90%", maxWidth: "400px" }}>
                 {petsQueue[0] ? (
                   <div>
-                    <PetCard petsQueue={petsQueue} adoptNotification = {adoptNotification} />
+                    <PetCard petsQueue={petsQueue} adoptNotification={adoptNotification} />
                     <Box sx={{ bottom: 20, right: 20, zIndex: 1000 }}>
-                    {
-                      notifications.map((n) => (
-                        <Notification key = {n.id} name = {n.name} onClose = {() => removeNotification(n.id)}/>
-                      )
-                      )
-                    } 
-                  </Box>   
+                      {notifications.map((n) => (
+                        <Notification key={n.id} name={n.name} onClose={() => removeNotification(n.id)} />
+                      ))}
+                    </Box>
                   </div>
                 ) : (
                   <Box
