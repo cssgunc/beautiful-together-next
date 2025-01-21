@@ -13,7 +13,7 @@ import Navbar from '../navbar/navbar';
 import LikedDog from './LikedDog';  // Add this import
 import LikedCat from './LikedCat';  // Add this import
 import { fetchPetData } from '../fetchPetData/fetchPetData';
-import { getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
+import { getSavedAnimals, removeAnimal } from '../savedPetsCookie/savedPetsCookie';
 
 
 // Theme creation
@@ -61,6 +61,10 @@ export default function SavedPetsPage() {
       console.error("Error fetching pet data", error.message);
     }
   }
+  const handleRemovePet = (petId) => {
+    setPets((prevPets) => prevPets.filter((pet) => pet.id !== petId)); // Update UI
+    removeAnimal(petId); // Update cookies
+  };
 
   
 
@@ -126,9 +130,9 @@ export default function SavedPetsPage() {
                     }}
                   >
                     {pet["dog/cat"] === 'dog' ? (
-                      <LikedDog dog={pet} />
+                      <LikedDog dog={pet} onRemove={handleRemovePet}/>
                     ) : (
-                      <LikedCat cat={pet} />
+                      <LikedCat cat={pet} onRemove={handleRemovePet} />
                     )}
                   </Grid>
                 ))}
