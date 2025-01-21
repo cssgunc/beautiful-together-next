@@ -9,7 +9,8 @@ import {
   Button,
   CardContent
 } from '@mui/material';
-import { NavigateBefore, NavigateNext } from '@mui/icons-material';
+import { NavigateBefore, NavigateNext, Close } from '@mui/icons-material';
+import { removeAnimal } from '../savedPetsCookie/savedPetsCookie';
 
 export const LikedPetCard = ({ pet, children }) => {
   const [currentPic, setCurrentPic] = React.useState(0);
@@ -30,7 +31,8 @@ export const LikedPetCard = ({ pet, children }) => {
       borderRadius: '16px',
       bgcolor: '#FFFFFF',
       overflow: 'hidden',
-      boxShadow: 3
+      boxShadow: 3,
+      position: 'relative'  // Allow positioning of the "X" button inside the card
     }}>
       <Box sx={{ position: 'relative' }}>
         <CardMedia
@@ -40,6 +42,8 @@ export const LikedPetCard = ({ pet, children }) => {
           alt={pet.name}
           sx={{ objectFit: 'cover' }}
         />
+        
+
         <Box sx={{
           position: 'absolute',
           inset: 0,
@@ -81,9 +85,11 @@ export const LikedPetCard = ({ pet, children }) => {
           </Typography>
         </Box>
       </Box>
+
       <CardContent>
         {children}
       </CardContent>
+
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'space-between', 

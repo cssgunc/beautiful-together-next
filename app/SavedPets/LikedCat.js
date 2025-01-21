@@ -1,19 +1,44 @@
 'use client';
 import React from 'react';
-import { Grid, Stack, Box, Typography } from '@mui/material';
+import { Grid, Stack, Box, Typography, IconButton } from '@mui/material';
 import { 
   PetsOutlined, 
   Male, 
   Female, 
   CakeOutlined, 
   ColorLensOutlined,
-  ChargingStationOutlined
+  ChargingStationOutlined,
+  Close 
 } from '@mui/icons-material';
 import { LikedPetCard } from './LikedPetCard';
+import { removeAnimal } from '../savedPetsCookie/savedPetsCookie';
 
-const LikedCat = ({ cat }) => {
+const LikedCat = ({ cat, onRemove }) => {
+  // Handle removing the pet
+  const handleRemovePet = () => {
+    removeAnimal(cat.id); // Remove from cookies
+    if (onRemove) {
+      onRemove(cat.id); // Notify the parent to update the UI
+    }
+  };
+
   return (
-    <LikedPetCard pet={cat}>
+    <LikedPetCard pet={cat} sx={{ position: 'relative' }}>
+      {/* The remove button */}
+      <IconButton
+        onClick={handleRemovePet} // Call the remove function on click
+        sx={{
+          position: 'absolute',  // Position it absolutely inside the card
+          top: '10px',  // 10px from the top
+          right: '10px',  // 10px from the right
+          backgroundColor: 'white',
+          borderRadius: '50%',  // Circular button
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Optional shadow
+        }}
+      >
+        <Close sx={{ color: 'secondary.main' }} /> {/* Close icon */}
+      </IconButton>
+
       <Grid container spacing={2} sx={{ mt: 2 }}>
         <Grid item xs={6}>
           <Stack spacing={2}>

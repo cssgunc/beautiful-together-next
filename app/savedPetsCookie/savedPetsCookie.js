@@ -29,3 +29,9 @@ export const getSavedAnimals = () => {
   };
   
   // Call the function to delete all cookies
+  export const removeAnimal = (animalId) => {
+    const savedAnimals = getSavedAnimals();
+    const updatedSavedAnimals = savedAnimals.filter((id) => id !== animalId);
+    document.cookie = `savedAnimals=${encodeURIComponent(JSON.stringify(updatedSavedAnimals))}; path=/; max-age=${30 * 24 * 60 * 60}`;
+  };
+  
