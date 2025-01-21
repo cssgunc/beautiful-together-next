@@ -64,6 +64,7 @@ const Navbar = ({ title }) => {
           </Typography>
           <IconButton 
             color="inherit" 
+            onClick={() => { window.location.href = '/SavedPets'; }}
             sx={{ 
               '& .MuiSvgIcon-root': { 
                 fontSize: '3rem',
