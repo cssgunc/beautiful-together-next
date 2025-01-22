@@ -128,7 +128,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
     <Card
       sx={{
         width: "100%",
-        height: "450px",
+        height: "550px",
         bgcolor: "#FFFFFF",
         borderRadius: "16px",
         overflow: "hidden",
@@ -153,7 +153,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       <Box sx={{ position: "relative" }}>
         <CardMedia
           component="img"
-          height="200"
+          height="300"
           image={currentPet.image}
           alt={currentPet.name}
           sx={{ objectFit: "cover" }}
