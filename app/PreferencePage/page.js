@@ -13,6 +13,8 @@ import {
   Button,
   Typography,
   Divider,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {
@@ -155,21 +157,15 @@ const Preferences = () => {
     },
   ];
 
-  // const [preferences, setPreferences] = useState(() => {
-  //   // Retrieve saved preferences from localStorage
-  //   const saved = localStorage.getItem('preferences');
-  //   return saved ? JSON.parse(saved) : {};
-  // });
-
   const [preferences, setPreferences] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const saved = typeof window !== 'undefined' ? localStorage.getItem('preferences') : null;
     if (saved) {
       setPreferences(JSON.parse(saved));
-    } 
+    }
   }, []);
-
 
   const handlePreferenceChange = (title, selectedOptions) => {
     setPreferences((prev) => ({
@@ -182,16 +178,15 @@ const Preferences = () => {
     e.preventDefault();
     // Save preferences to localStorage
     localStorage.setItem('preferences', JSON.stringify(preferences));
-    alert('Preferences saved!');
+    setSnackbarOpen(true); // Show the Snackbar
   };
 
-  useEffect(() => {
-    // Autofill the form with saved preferences when the page loads
-    const saved = localStorage.getItem('preferences');
-    if (saved) {
-      setPreferences(JSON.parse(saved));
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
-  }, []);
+    setSnackbarOpen(false); // Hide the Snackbar
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -254,6 +249,16 @@ const Preferences = () => {
             </Box>
           </Box>
         </Container>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+            Preferences saved!
+          </Alert>
+        </Snackbar>
       </Box>
     </ThemeProvider>
   );
