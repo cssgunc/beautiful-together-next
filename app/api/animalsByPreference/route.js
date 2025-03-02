@@ -38,6 +38,7 @@ const preferenceTagMap = {
 
 
 function comparePreference(preferenceCategory, userChoices, animalValue, allowPartial = false) {
+  // Trim whitespace off of any string
   const normalize = (value) => (value ? value.toString().trim().toLowerCase() : "");
 
   if (!userChoices?.length || !preferenceTagMap[preferenceCategory]) return false;
