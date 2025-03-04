@@ -4,12 +4,13 @@ from supabase import create_client, Client
 import re
 import pprint
 import os
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 
 # Supabase credentials
 # config = dotenv_values(".env.local")
 # SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
 # SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
+load_dotenv('.env.local')
 SUPABASE_URL = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
 SUPABASE_KEY =  os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
 
@@ -34,6 +35,16 @@ for tag in soup.find_all('div', class_='col-12 Bzl-dog-heading heading-equal'):
     if link_tag:
         link = link_tag['href']
     dogs.append({'name': clean_name, 'link': link})
+
+# Function to get the description for each dog
+def get_description_dict(url) -> dict:
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    desc_div = soup.find('div', class_='dog-description')
+    description = desc_div.get_text(strip=True) if desc_div else ""
+    
+    return description
 
 # Function to scrape tags from each dog page
 def get_tags(url) -> dict[str, str]:
@@ -82,8 +93,10 @@ for dog in dogs:
     # Scrape tags and images from individual dog page
     tags = get_tags(dog['link'])
     images = get_images(dog['link'])
+    descriptions = get_description_dict(dog['link'])
     
     animal_type = 'dog'
+    dog['description'] = descriptions
     dog['tags'] = tags
     dog['images'] = images
     dog['type'] = animal_type
@@ -108,6 +121,8 @@ def update_database_with_scraped_data(animals):
         if link in existing_links:
             # Check if the data has changed
             existing_animal = existing_animals[link]
+            if dog['description'] != existing_animal.get('description'):
+                animals_to_update.append(dog)
             if dog['tags'] != existing_animal.get('tags'):
                 animals_to_update.append(dog)
             existing_links.remove(link)
@@ -121,6 +136,7 @@ def update_database_with_scraped_data(animals):
     for animal in animals_to_insert:
         supabase.table(table_to_update).insert({
             'name': animal['name'],
+            'description': animal['description'],
             'tags': animal['tags'],
             'link': animal['link'],
             'images': animal['images'],  # Insert filtered images
@@ -130,6 +146,7 @@ def update_database_with_scraped_data(animals):
     for animal in animals_to_update:
         supabase.table(table_to_update).update({
             'tags': animal['tags'],
+            'description': animal['description'],
             'images': animal['images'],  # Update images
             'dog/cat': animal['type']
         }).eq('link', animal['link']).execute()
