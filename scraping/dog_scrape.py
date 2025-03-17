@@ -5,14 +5,27 @@ import re
 import pprint
 import os
 from dotenv import load_dotenv
+import sys
+from pathlib import Path
 
-# Supabase credentials
-# config = dotenv_values(".env.local")
-# SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
-# SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
-load_dotenv('.env.local')
+# Load environment variables properly
+# Get the absolute path to the project root directory
+project_root = Path(__file__).resolve().parent.parent
+env_path = project_root / '.env.local'
+
+# Load the environment variables
+load_dotenv(dotenv_path=env_path)
+
+# Get Supabase credentials
 SUPABASE_URL = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
-SUPABASE_KEY =  os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+SUPABASE_KEY = os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+
+# Verify that credentials are loaded
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("Error: Supabase credentials not found in environment variables.")
+    print(f"Looking for env file at: {env_path}")
+    print(f"Current working directory: {os.getcwd()}")
+    sys.exit(1)
 
 # The table that is edited
 table_to_update = 'Available Animals'

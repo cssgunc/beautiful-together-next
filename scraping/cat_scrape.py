@@ -5,12 +5,15 @@ import re
 import pprint
 import os
 from dotenv import load_dotenv
+import sys
+from pathlib import Path
 
-# Supabase credentials
-# config = dotenv_values(".env.local")
-# SUPABASE_URL = config['NEXT_PUBLIC_SUPABASE_URL']
-# SUPABASE_KEY =  config['NEXT_PUBLIC_SUPABASE_ANON_KEY']
-load_dotenv('.env.local')
+# Load environment variables properly
+# Get the absolute path to the project root directory
+project_root = Path(__file__).resolve().parent.parent
+env_path = project_root / '.env.local'
+
+load_dotenv(dotenv_path=env_path)
 SUPABASE_URL = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
 SUPABASE_KEY = os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
 
