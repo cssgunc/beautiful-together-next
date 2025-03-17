@@ -84,13 +84,15 @@ function calculateClosenessScore(animal, preferences) {
     "Special Needs": 2,
   };
 
+  const partialCats = ["Age", "Good With Kids?", "Good With Pets?", "Special Needs"];
+
   Object.keys(WEIGHTS).forEach((category) => {
     const userChoices = preferences[category];
     const animalValue =
       category === "Pet Preference" ? animal["dog/cat"] : animal?.tags?.[category];
 
     // Enable partial matching only for Age
-    const allowPartial = category === "Age";
+    const allowPartial = partialCats.includes(category);
 
     if (!comparePreference(category, userChoices, animalValue, allowPartial)) {
       console.log(`Mismatch in ${category}:`, userChoices, animalValue);
@@ -102,6 +104,20 @@ function calculateClosenessScore(animal, preferences) {
   return score;
 }
 
+function matchesHardFilters(animal, preferences) {
+  const hardFilters = ["Pet Preference", "Gender"];
+
+  return hardFilters.every(category => {
+    const userChoices = preferences[category];
+    const animalValue = category === "Pet Preference" ? animal["dog/cat"] : animal?.tags?.[category];
+
+    if (!userChoices?.length) return true;
+
+    const validTags = userChoices.flatMap(choice => preferenceTagMap[category][choice] || []).map(tag => tag.toLowerCase());
+
+    return validTags.includes(animalValue?.toLowerCase());
+  });
+}
 
 
 
@@ -120,10 +136,17 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
   }
 
-  const rankedAnimals = animals.map((animal) => {
-    const score = calculateClosenessScore(animal, preferences);
-    return { ...animal, score };
-  });
+
+  const filteredAnimals = animals.filter(animal => matchesHardFilters(animal, preferences));
+  const rankedAnimals = filteredAnimals.map((animal) => ({
+    ...animal,
+    score: calculateClosenessScore(animal, preferences),
+  }));
+
+  // const rankedAnimals = animals.map((animal) => {
+  //   const score = calculateClosenessScore(animal, preferences);
+  //   return { ...animal, score };
+  // });
 
   rankedAnimals.sort((a, b) => a.score - b.score);
 
