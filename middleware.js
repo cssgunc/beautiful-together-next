@@ -40,8 +40,8 @@ export async function middleware(request) {
               return value.replace(/[^\x00-\x7F]/g, ""); // Removes non-ASCII characters
             }
             return value;
-          }
-        )
+          },
+        ),
       );
 
       console.log("Data Fetched");
@@ -49,7 +49,7 @@ export async function middleware(request) {
       console.error("Error fetching pet data:", error);
       return NextResponse.json(
         { error: "Failed to fetch pet data" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   } else {

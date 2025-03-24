@@ -102,12 +102,12 @@ export default function Home() {
                         row[field].length > 0
                           ? row[field].map((imgUrl) => <img src={imgUrl}></img>)
                           : field === "tags" && row[field]
-                          ? Object.entries(row[field]).map(([tag, value]) => (
-                              <p>
-                                {tag}: {value}
-                              </p>
-                            ))
-                          : row[field]}
+                            ? Object.entries(row[field]).map(([tag, value]) => (
+                                <p>
+                                  {tag}: {value}
+                                </p>
+                              ))
+                            : row[field]}
                       </td>
                     ))}
                   </tr>
