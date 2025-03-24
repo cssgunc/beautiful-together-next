@@ -119,7 +119,7 @@ export const LikedPetCard = ({ pet, children }) => {
         </Button>
         <Button
           component="a"
-          href={`https://beautifultogethersanctuary.com/${pet.species}-adoption/`}
+          href={`https://beautifultogethersanctuary.com/${pet["dog/cat"]}-adoption/`}
           target="_blank"
           rel="noopener noreferrer"
           variant="contained"
