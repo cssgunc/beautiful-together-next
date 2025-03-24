@@ -1,105 +1,103 @@
 /* Navbar.css */
 .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    background-color: #f8f9fa;
-    position: relative;
-    height: 80px; 
-    background-color: #40a824;
-    color: white;
-  }
-  
-  .logo {
-    height: 80px; /* Adjust size as needed */
-  }
-  
-  .navbar-text {
-    flex-grow: 1;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-left: -60px;
-  }
-  
-  .dropdown {
-    position: relative;
-  }
-  
-  .dropdown-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .dropdown-content {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    z-index: 1;
-    margin-top: 5px;
-    min-width: 160px;
-    margin-top: 5px;
-    min-width: 160px;
-    margin-top: 50px;
-    margin-right: 12px;
-    border-radius: 3px;
-    text-align: left;
-  }
-  
-  .dropdown-content a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: black;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .header{
-    height: 80px; 
-    background-color: #40a824;
-    padding: 20px;
-    color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  position: relative;
+  height: 80px;
+  background-color: #40a824;
+  color: white;
 }
 
-.heart{
-    height: 3rem;
-    width: 3rem;
+.logo {
+  height: 80px; /* Adjust size as needed */
+}
+
+.navbar-text {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-left: -60px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 1;
+  margin-top: 5px;
+  min-width: 160px;
+  margin-top: 5px;
+  min-width: 160px;
+  margin-top: 50px;
+  margin-right: 12px;
+  border-radius: 3px;
+  text-align: left;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.header {
+  height: 80px;
+  background-color: #40a824;
+  padding: 20px;
+  color: white;
+}
+
+.heart {
+  height: 3rem;
+  width: 3rem;
 }
 
 .heart:hover {
   /*
     background-color: #f1f1f1;
     */
-    color: rgb(219, 240, 219);
-  }
+  color: rgb(219, 240, 219);
+}
 
-.lines{
-    height: 3rem;
-    width: 3rem;
+.lines {
+  height: 3rem;
+  width: 3rem;
 }
 
 .lines:hover {
   /*
     background-color: #f1f1f1;
     */
-    color: rgb(219, 240, 219);
-  }
-
-
-.iconInDiv{
-    height: 3rem;
-    width: 3.5rem;
+  color: rgb(219, 240, 219);
 }
 
+.iconInDiv {
+  height: 3rem;
+  width: 3.5rem;
+}
 
-.icons{
+.icons {
   display: flex;
   flex-direction: row;
   justify-content: end;

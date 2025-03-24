@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  IconButton,
   Button,
   Grid,
   Box,
@@ -25,6 +26,8 @@ import {
   School,
   FamilyHome,
   House,
+  NavigateBefore, 
+  NavigateNext
 } from "@mui/icons-material";
 
 const iconMap = {
@@ -52,6 +55,20 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const [currentPet, setCurrentPet] = useState(petsQueue[0]);
   const [animation, setAnimation] = useState(""); // Track animation type
   const [index, setIndex] = useState(0);
+
+
+  // Handle logic for picture carousel 
+  const[currentPic, setCurrentPic] = useState(0);
+  const numpics = currentPet.images != undefined ? currentPet.images.length : 1
+
+  const prevPic = () => {
+    setCurrentPic((currentPic - 1 + numpics) % numpics);
+  };
+
+  const nextPic = () => {
+    setCurrentPic((currentPic + 1) % numpics);
+  };
+
 
   const handleSwipe = (direction) => {
     setAnimation(direction);
@@ -101,19 +118,18 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       }
     }
 
-    let imageUrl = defaultImage;
-    if (pet.images && pet.images.length > 0 && pet.images[0]) {
-      imageUrl = pet.images[0].startsWith("http")
-        ? pet.images[0]
-        : `${pet.images[0]}`;
-    }
+    const images = pet.images && pet.images.length > 0
+    ? pet.images.map((img) =>
+        img.startsWith("http") ? img : `${img}`
+      )
+    : [defaultImage];
 
     return {
       id: pet.id,
       name: pet.name || "Unknown",
       age: pet.tags?.Age ? pet.tags.Age.split("(")[0].trim() : "Unknown",
-      image: imageUrl,
-      traits: traits,
+      images,
+      traits,
       summary: pet.tags?.["Energy Level"]
         ? `${pet.name} is ${pet.tags["Energy Level"].toLowerCase()}. ${
             pet.tags.Breed ? `This lovely ${pet.tags.Breed}` : "This pet"
@@ -126,6 +142,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
 
   useEffect(() => {
     setCurrentPet(transformPetData(petsQueue[index]));
+    console.log("JSON: " + JSON.stringify(currentPet));
   }, [index]);
 
   return (
@@ -158,10 +175,42 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
         <CardMedia
           component="img"
           height="300"
-          image={currentPet.image}
+          image={(currentPet.images != undefined) ? currentPet.images[currentPic] : currentPet.image }
           alt={currentPet.name}
           sx={{ objectFit: "cover" }}
         />
+
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 2,
+          }}
+        >
+          <IconButton 
+            onClick={prevPic}
+            sx={{ 
+              bgcolor: 'rgba(255, 255, 255, 0.9)',
+              '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+            }}
+          >
+            <NavigateBefore />
+          </IconButton>
+          <IconButton 
+            onClick={nextPic}
+            sx={{ 
+              bgcolor: 'rgba(255, 255, 255, 0.9)',
+              '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+            }}
+          >
+            <NavigateNext />
+          </IconButton>
+        </Box>
+        
+
         <Box
           sx={{
             position: "absolute",

@@ -1,21 +1,21 @@
 .swipeOut {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  
-  .swipeIn {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  
-  .hidden {
-    display: none;
-  }
+  transform: translateX(-100%);
+  opacity: 0;
+}
 
-  .absolute{
-    position: absolute
-  }
+.swipeIn {
+  transform: translateX(0);
+  opacity: 1;
+}
 
-  .relative {
-    position : relative
-  }
+.hidden {
+  display: none;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}

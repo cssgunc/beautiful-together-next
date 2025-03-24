@@ -1,5 +1,5 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -15,8 +15,8 @@ import {
   Divider,
   Snackbar,
   Alert,
-} from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+} from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   ExpandMore,
   Pets,
@@ -25,24 +25,30 @@ import {
   ChildCare,
   MedicalInformation,
   Checklist,
-} from '@mui/icons-material';
-import Navbar from '../navbar/navbar';
+} from "@mui/icons-material";
+import Navbar from "../navbar/navbar";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4caf50',
+      main: "#4caf50",
     },
     secondary: {
-      main: '#f44336',
+      main: "#f44336",
     },
     background: {
-      default: '#F8F6F3',
+      default: "#F8F6F3",
     },
   },
 });
 
-const PreferenceSection = ({ title, options, icon, savedPreferences, onChange }) => {
+const PreferenceSection = ({
+  title,
+  options,
+  icon,
+  savedPreferences,
+  onChange,
+}) => {
   const [selected, setSelected] = useState(savedPreferences[title] || []);
 
   const handleChange = (option) => {
@@ -63,10 +69,10 @@ const PreferenceSection = ({ title, options, icon, savedPreferences, onChange })
       <Accordion
         elevation={0}
         sx={{
-          '&:before': {
-            display: 'none',
+          "&:before": {
+            display: "none",
           },
-          '&.Mui-expanded': {
+          "&.Mui-expanded": {
             margin: 0,
           },
         }}
@@ -74,12 +80,12 @@ const PreferenceSection = ({ title, options, icon, savedPreferences, onChange })
         <AccordionSummary
           expandIcon={<ExpandMore />}
           sx={{
-            '&.Mui-expanded': {
-              minHeight: '48px',
+            "&.Mui-expanded": {
+              minHeight: "48px",
             },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {icon}
             <Typography>{title}</Typography>
             {selected.length > 0 && (
@@ -100,7 +106,7 @@ const PreferenceSection = ({ title, options, icon, savedPreferences, onChange })
                     onChange={() => handleChange(option)}
                     sx={{
                       color: theme.palette.primary.main,
-                      '&.Mui-checked': {
+                      "&.Mui-checked": {
                         color: theme.palette.primary.main,
                       },
                     }}
@@ -120,39 +126,39 @@ const PreferenceSection = ({ title, options, icon, savedPreferences, onChange })
 const Preferences = () => {
   const preferenceOptions = [
     {
-      title: 'Pet Preference',
-      options: ['Cats', 'Dogs'],
+      title: "Pet Preference",
+      options: ["Cats", "Dogs"],
       icon: <Pets color="primary" />,
     },
     {
-      title: 'Gender',
-      options: ['Male', 'Female'],
+      title: "Gender",
+      options: ["Male", "Female"],
       icon: <WcOutlined color="primary" />,
     },
     {
-      title: 'Age',
+      title: "Age",
       options: [
-        'Baby (0-5 Months)',
-        'Puppy (5-24 Months)',
-        'Youth (2-5 Years)',
-        'Adult (5-9 Years)',
-        'Senior (9+ Years)',
+        "Baby (0-5 Months)",
+        "Puppy (5-24 Months)",
+        "Youth (2-5 Years)",
+        "Adult (5-9 Years)",
+        "Senior (9+ Years)",
       ],
       icon: <Cake color="primary" />,
     },
     {
-      title: 'Good With Pets?',
-      options: ['Big Dogs', 'Small Dogs', 'Cats'],
+      title: "Good With Pets?",
+      options: ["Big Dogs", "Small Dogs", "Cats"],
       icon: <Checklist color="primary" />,
     },
     {
-      title: 'Good With Kids?',
-      options: ['Kids Over 6', 'Kids Over 10'],
+      title: "Good With Kids?",
+      options: ["Kids Over 6", "Kids Over 10"],
       icon: <ChildCare color="primary" />,
     },
     {
-      title: 'Special Needs',
-      options: ['Yes', 'No'],
+      title: "Special Needs",
+      options: ["Yes", "No"],
       icon: <MedicalInformation color="primary" />,
     },
   ];
@@ -161,7 +167,10 @@ const Preferences = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('preferences') : null;
+    const saved =
+      typeof window !== "undefined"
+        ? localStorage.getItem("preferences")
+        : null;
     if (saved) {
       setPreferences(JSON.parse(saved));
     }
@@ -177,12 +186,12 @@ const Preferences = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Save preferences to localStorage
-    localStorage.setItem('preferences', JSON.stringify(preferences));
+    localStorage.setItem("preferences", JSON.stringify(preferences));
     setSnackbarOpen(true); // Show the Snackbar
   };
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbarOpen(false); // Hide the Snackbar
@@ -190,26 +199,28 @@ const Preferences = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
+      <Box
+        sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}
+      >
         <Navbar />
         <Container maxWidth="sm" sx={{ mt: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box sx={{ width: '90%', maxWidth: '400px' }}>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box sx={{ width: "90%", maxWidth: "400px" }}>
               <Card
                 component="form"
                 onSubmit={handleSubmit}
                 sx={{
-                  width: '100%',
-                  bgcolor: '#FFFFFF',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
+                  width: "100%",
+                  bgcolor: "#FFFFFF",
+                  borderRadius: "16px",
+                  overflow: "hidden",
                 }}
               >
                 <Box
                   sx={{
-                    bgcolor: 'rgba(76, 175, 80, 0.9)',
-                    color: 'white',
-                    padding: '16px',
+                    bgcolor: "rgba(76, 175, 80, 0.9)",
+                    color: "white",
+                    padding: "16px",
                   }}
                 >
                   <Typography variant="h6">Your Preferences</Typography>
@@ -226,19 +237,19 @@ const Preferences = () => {
                   />
                 ))}
 
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
                   <Button
                     type="submit"
                     variant="contained"
                     sx={{
-                      width: '200px',
-                      borderRadius: '8px',
-                      textTransform: 'none',
-                      fontSize: '1.1rem',
-                      color: 'white',
-                      bgcolor: '#f4900c',
-                      '&:hover': {
-                        bgcolor: '#d67d0a',
+                      width: "200px",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      fontSize: "1.1rem",
+                      color: "white",
+                      bgcolor: "#f4900c",
+                      "&:hover": {
+                        bgcolor: "#d67d0a",
                       },
                     }}
                   >
@@ -253,9 +264,13 @@ const Preferences = () => {
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          <Alert
+            onClose={handleSnackbarClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
             Preferences saved!
           </Alert>
         </Snackbar>
