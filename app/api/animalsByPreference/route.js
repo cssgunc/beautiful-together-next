@@ -40,9 +40,11 @@ const preferenceTagMap = {
 function comparePreference(preferenceCategory, userChoices, animalValue, allowPartial = false) {
   // Trim whitespace off of any string
   const normalize = (value) => (value ? value.toString().trim().toLowerCase() : "");
-
+  
+  // catch invalid input
   if (!userChoices?.length || !preferenceTagMap[preferenceCategory]) return false;
 
+  // create an array of choices
   const validTags = userChoices
     .map((choice) => preferenceTagMap[preferenceCategory][choice])
     .flat() // Flatten nested arrays
@@ -73,6 +75,7 @@ function comparePreference(preferenceCategory, userChoices, animalValue, allowPa
 
 
 function calculateClosenessScore(animal, preferences) {
+  // returns a value relating to the filters inputted
   let score = 0;
 
   const WEIGHTS = {
@@ -84,6 +87,7 @@ function calculateClosenessScore(animal, preferences) {
     "Special Needs": 2,
   };
 
+  // for each of the weights, calculate if it is relevent
   Object.keys(WEIGHTS).forEach((category) => {
     const userChoices = preferences[category];
     const animalValue =
@@ -101,9 +105,6 @@ function calculateClosenessScore(animal, preferences) {
   console.log("Final Score for Animal:", animal.name, score);
   return score;
 }
-
-
-
 
 
 export async function POST(req) {

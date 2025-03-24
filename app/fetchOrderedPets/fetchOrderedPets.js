@@ -30,6 +30,7 @@ export const fetchOrderedPets = async () => {
   
       if (!response.ok) {
         console.warn('Failed to fetch ranked animals. Fetching unranked animals instead.');
+        console.error("Response: " + response.status);
         const res = await fetch('../api/animals');
         const unrankedAnimals = await res.json();
         return unrankedAnimals;
