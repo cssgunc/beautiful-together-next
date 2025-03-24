@@ -7,7 +7,7 @@ import PetCard from "./PetCard";
 import { fetchOrderedPets } from "../fetchOrderedPets/fetchOrderedPets";
 import Notification from "./Notification";
 import Navbar from "../navbar/navbar";
-import { getSavedAnimals } from '../savedPetsCookie/savedPetsCookie';
+import { getSavedAnimals } from "../savedPetsCookie/savedPetsCookie";
 
 const theme = createTheme({
   palette: {
@@ -35,11 +35,13 @@ export default function Home() {
         const petsData = await fetchOrderedPets(); // Fetch ordered pets
 
         // Filter out pets that are already saved
-        const filteredPets = petsData.filter(pet => !savedPets.includes(pet.id));
+        const filteredPets = petsData.filter(
+          (pet) => !savedPets.includes(pet.id),
+        );
 
         setPetsQueue(filteredPets); // Update state with filtered pets
       } catch (error) {
-        console.error('Error fetching pets data:', error);
+        console.error("Error fetching pets data:", error);
       }
     };
 
@@ -57,7 +59,9 @@ export default function Home() {
   };
 
   const removeNotification = (id) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+    setNotifications((prev) =>
+      prev.filter((notification) => notification.id !== id),
+    );
   };
 
   const handlePass = () => {
@@ -89,7 +93,9 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}>
+      <Box
+        sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}
+      >
         <Navbar />
         {!loading && (
           <Container maxWidth="sm" sx={{ mt: 4 }}>
@@ -97,10 +103,17 @@ export default function Home() {
               <Box sx={{ width: "90%", maxWidth: "400px" }}>
                 {petsQueue[0] ? (
                   <div>
-                    <PetCard petsQueue={petsQueue} adoptNotification={adoptNotification} />
+                    <PetCard
+                      petsQueue={petsQueue}
+                      adoptNotification={adoptNotification}
+                    />
                     <Box sx={{ bottom: 20, right: 20, zIndex: 1000 }}>
                       {notifications.map((n) => (
-                        <Notification key={n.id} name={n.name} onClose={() => removeNotification(n.id)} />
+                        <Notification
+                          key={n.id}
+                          name={n.name}
+                          onClose={() => removeNotification(n.id)}
+                        />
                       ))}
                     </Box>
                   </div>

@@ -70,7 +70,7 @@ export default function LikedPetsPage() {
       // Add the response to the cache
       await cache.put(
         "https://dummyjson.com/products",
-        new Response(JSON.stringify(data))
+        new Response(JSON.stringify(data)),
       );
 
       return data;
