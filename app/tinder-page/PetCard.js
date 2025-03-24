@@ -15,6 +15,7 @@ import {
   Favorite,
   Close,
   Male,
+  Female,
   Cake,
   Scale,
   Palette,
@@ -99,18 +100,21 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const transformPetData = (pet) => {
     if (!pet) return null;
 
+    console.log("current pet data: ", pet)
+
     const traits = [];
     if (pet.tags) {
-      if (pet.tags.Breed) traits.push({ icon: "Pets", text: pet.tags.Breed });
-      if (pet.tags.Gender) traits.push({ icon: "Male", text: pet.tags.Gender });
+      if (pet.tags.Breed) traits.push({ icon: Pets, text: pet.tags.Breed });
+      if (pet.tags.Gender && pet.tags.Gender == 'Male') traits.push({ icon: Male, text: pet.tags.Gender });
+      if (pet.tags.Gender && pet.tags.Gender == 'Female') traits.push({ icon: Female, text: pet.tags.Gender });
       if (pet.tags.Age)
-        traits.push({ icon: "Cake", text: pet.tags.Age.split("-")[0].trim() });
+        traits.push({ icon: Cake, text: pet.tags.Age.split("-")[0].trim() });
       if (pet.tags.Weight)
-        traits.push({ icon: "Scale", text: pet.tags.Weight });
+        traits.push({ icon: Scale, text: pet.tags.Weight });
       if (pet.tags.Color)
-        traits.push({ icon: "Palette", text: pet.tags.Color });
+        traits.push({ icon: Palette, text: pet.tags.Color });
       if (pet.tags["Good with Kids"]) {
-        traits.push({ icon: "ChildCare", text: pet.tags["Good with Kids"] });
+        traits.push({ icon: ChildCare, text: pet.tags["Good with Kids"] });
       }
     }
 
@@ -229,7 +233,8 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
         <Grid container spacing={1} sx={{ mb: 2 }}>
           {Array.isArray(currentPet.traits) &&
             currentPet.traits.map((trait, index) => {
-              const IconComponent = iconMap[trait.icon] || Pets;
+              console.log("current trait:" , trait)
+              const IconComponent = trait.icon || Pets;
               return (
                 <Grid item key={index}>
                   <Chip
