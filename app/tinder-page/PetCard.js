@@ -62,11 +62,17 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const numpics = currentPet.images != undefined ? currentPet.images.length : 1
 
   const prevPic = () => {
-    setCurrentPic((currentPic - 1 + numpics) % numpics);
+    const newIndex = (currentPic - 1 + numpics) % numpics;
+    console.log(`Moving from image ${currentPic} to ${newIndex}`);
+    console.log(`Current images array:`, currentPet.images);
+    setCurrentPic(newIndex);
   };
 
   const nextPic = () => {
-    setCurrentPic((currentPic + 1) % numpics);
+    const newIndex = (currentPic + 1) % numpics;
+    console.log(`Moving from image ${currentPic} to ${newIndex}`);
+    console.log(`Current images array:`, currentPet.images);
+    setCurrentPic(newIndex);
   };
 
 
@@ -143,19 +149,21 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   useEffect(() => {
     setCurrentPet(transformPetData(petsQueue[index]));
     console.log("JSON: " + JSON.stringify(currentPet));
+    // Reset current picture index when moving to a new pet
+    setCurrentPic(0);
   }, [index]);
 
   return (
     <Card
       sx={{
         width: "100%",
-        height: "550px",
+        height: "650px", 
         bgcolor: "#FFFFFF",
         borderRadius: "16px",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between", // Maintain spacing between sections
+        justifyContent: "space-between", 
         transition:
           animation === "swipe-left" || animation === "swipe-right"
             ? "transform 0.4s ease, opacity 0.2s ease"
@@ -171,46 +179,57 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       }}
     >
       {/* Pet Image Section */}
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{ position: "relative", height: "400px" }}> 
         <CardMedia
           component="img"
-          height="300"
-          image={(currentPet.images != undefined) ? currentPet.images[currentPic] : currentPet.image }
+          image={(currentPet.images != undefined) ? currentPet.images[currentPic] : currentPet.image}
           alt={currentPet.name}
-          sx={{ objectFit: "cover" }}
+          onError={(e) => {
+            console.error(`Failed to load image at index ${currentPic}:`, e);
+            // Set fallback image
+            e.target.src = defaultImage;
+          }}
+          sx={{ 
+            objectFit: "contain",
+            backgroundColor: "#000000",
+            height: "100%", 
+            width: "100%"   
+          }}
         />
 
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            p: 2,
-          }}
-        >
-          <IconButton 
-            onClick={prevPic}
-            sx={{ 
-              bgcolor: 'rgba(255, 255, 255, 0.9)',
-              '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+        {/* Only show navigation arrows if there is more than one image */}
+        {numpics > 1 && (
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
             }}
           >
-            <NavigateBefore />
-          </IconButton>
-          <IconButton 
-            onClick={nextPic}
-            sx={{ 
-              bgcolor: 'rgba(255, 255, 255, 0.9)',
-              '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
-            }}
-          >
-            <NavigateNext />
-          </IconButton>
-        </Box>
+            <IconButton 
+              onClick={prevPic}
+              sx={{ 
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+              }}
+            >
+              <NavigateBefore />
+            </IconButton>
+            <IconButton 
+              onClick={nextPic}
+              sx={{ 
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+              }}
+            >
+              <NavigateNext />
+            </IconButton>
+          </Box>
+        )}
         
-
         <Box
           sx={{
             position: "absolute",
@@ -220,11 +239,19 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
             bgcolor: "rgba(76, 175, 80, 0.9)",
             color: "white",
             padding: "8px 16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
           }}
         >
           <Typography variant="h6" component="span">
             {currentPet.name}
           </Typography>
+          {numpics > 1 && (
+            <Typography variant="body2">
+              {currentPic + 1} / {numpics}
+            </Typography>
+          )}
         </Box>
       </Box>
 
@@ -257,7 +284,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
           display: "flex",
           justifyContent: "space-between",
           padding: "16px",
-          borderTop: "1px solid #e0e0e0", // Optional separator
+          borderTop: "1px solid #e0e0e0", 
         }}
       >
         <Button
