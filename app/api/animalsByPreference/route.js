@@ -43,6 +43,14 @@ const preferenceTagMap = {
   },
 };
 
+// Map of categories to their negation tags
+const negationTagMap = {
+  "Good With Kids?": ["i don't like kids", "i don't like any kids"],
+  "Good With Pets?": ["i don't like dogs", "i don't like any dogs"],
+  "Good With Dogs?": ["i don't like dogs", "i don't like any dogs"],
+  "Good With Cats?": ["i don't like cats", "i don't like any cats"],
+};
+
 /**
  * Normalize a string value for comparison
  * @param {string} value - The value to normalize
@@ -105,6 +113,23 @@ function findBestMatch(animalValue, preferredValues) {
 }
 
 /**
+ * Check if an animal has a negation tag for a category
+ * @param {Object} animal - The animal object
+ * @param {string} category - The category to check
+ * @returns {boolean} Whether the animal has a negation tag
+ */
+function hasNegationTag(animal, category) {
+  if (!negationTagMap[category]) return false;
+  
+  const animalValue = getAnimalValue(animal, category);
+  if (!animalValue) return false;
+  
+  return negationTagMap[category].some(negTag => 
+    normalize(animalValue).includes(normalize(negTag))
+  );
+}
+
+/**
  * Get the animal's value for a category, handling special cases
  * @param {Object} animal - The animal object
  * @param {string} category - The category to get the value for
@@ -154,6 +179,13 @@ function calculateClosenessScore(animal, preferences) {
 
     // Get the animal's value for this category
     const animalValue = getAnimalValue(animal, category);
+
+    // Check for negation tags first
+    if (hasNegationTag(animal, category)) {
+      // Add a significant penalty for negation tags
+      totalScore += WEIGHTS[category] * 2;
+      return;
+    }
 
     // Get all valid tags for this category and user choices
     const validTags = userChoices
