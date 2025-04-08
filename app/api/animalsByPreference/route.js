@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -10,12 +10,16 @@ const preferenceTagMap = {
     "Dogs": ["dog"],
     "Cats": ["cat"],
   },
-  "Gender": {
-    "Male": ["male"],
-    "Female": ["female"],
+  Gender: {
+    Male: ["male"],
+    Female: ["female"],
   },
-  "Age": {
-    "Baby (0-5 Months)": ["baby (0-5 months)", "kitten (under 1 year)", "puppy (under 1 year)"],
+  Age: {
+    "Baby (0-5 Months)": [
+      "baby (0-5 months)",
+      "kitten (under 1 year)",
+      "puppy (under 1 year)",
+    ],
     "Puppy (5-24 Months)": ["puppy (5-24 months)", "youth (24-60 months)"],
     "Youth (2-5 Years)": ["youth (2-5 years)"],
     "Adult (5-9 Years)": ["adult (5-9 years)"],
@@ -36,10 +40,11 @@ const preferenceTagMap = {
   },
   "Good With Cats?": {
     "Cats": ["i like all cats", "some"],
+
   },
   "Special Needs": {
-    "Yes": ["yes"],
-    "No": ["no"],
+    Yes: ["yes"],
+    No: ["no"],
   },
 };
 
@@ -57,6 +62,7 @@ const negationTagMap = {
  * @returns {string} Normalized string
  */
 const normalize = (value) => (value ? value.toString().trim().toLowerCase() : "");
+
 
 /**
  * Calculate string similarity score between two strings
@@ -126,6 +132,7 @@ function hasNegationTag(animal, category) {
   
   return negationTagMap[category].some(negTag => 
     normalize(animalValue).includes(normalize(negTag))
+
   );
 }
 
@@ -138,6 +145,7 @@ function hasNegationTag(animal, category) {
 function getAnimalValue(animal, category) {
   if (category === "Pet Preference") {
     return animal["dog/cat"];
+
   }
   
   // For dog compatibility, check both "Good With Pets?" and "Good With Dogs?"
@@ -154,11 +162,13 @@ function getAnimalValue(animal, category) {
  * @param {Object} preferences - User preferences object
  * @returns {Object} Score details including total score and match counts
  */
+
 function calculateClosenessScore(animal, preferences) {
   const WEIGHTS = {
     "Pet Preference": 20,
     "Gender": 5,
     "Age": 10,
+
     "Good With Kids?": 3,
     "Good With Pets?": 3,
     "Good With Dogs?": 3,
@@ -170,6 +180,7 @@ function calculateClosenessScore(animal, preferences) {
   let exactMatches = 0;
   let partialMatches = 0;
   let totalCategories = 0;
+
 
   // Check each preference category
   Object.entries(preferences).forEach(([category, userChoices]) => {
@@ -222,6 +233,7 @@ function calculateClosenessScore(animal, preferences) {
 /**
  * Handle POST requests to rank animals by user preferences
  */
+
 export async function POST(req) {
   try {
     const preferences = await req.json();
@@ -236,6 +248,7 @@ export async function POST(req) {
     const { data: animals, error } = await supabase
       .from('Available Animals')
       .select('*');
+
 
     if (error) {
       console.error('Supabase error:', error);

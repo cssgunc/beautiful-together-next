@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  IconButton,
   Button,
   Grid,
   Box,
@@ -14,6 +15,7 @@ import {
   Favorite,
   Close,
   Male,
+  Female,
   Cake,
   Scale,
   Palette,
@@ -24,6 +26,8 @@ import {
   School,
   FamilyHome,
   House,
+  NavigateBefore, 
+  NavigateNext
 } from "@mui/icons-material";
 
 const iconMap = {
@@ -51,6 +55,26 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const [currentPet, setCurrentPet] = useState(petsQueue[0]);
   const [animation, setAnimation] = useState(""); // Track animation type
   const [index, setIndex] = useState(0);
+
+
+  // Handle logic for picture carousel 
+  const[currentPic, setCurrentPic] = useState(0);
+  const numpics = currentPet.images != undefined ? currentPet.images.length : 1
+
+  const prevPic = () => {
+    const newIndex = (currentPic - 1 + numpics) % numpics;
+    console.log(`Moving from image ${currentPic} to ${newIndex}`);
+    console.log(`Current images array:`, currentPet.images);
+    setCurrentPic(newIndex);
+  };
+
+  const nextPic = () => {
+    const newIndex = (currentPic + 1) % numpics;
+    console.log(`Moving from image ${currentPic} to ${newIndex}`);
+    console.log(`Current images array:`, currentPet.images);
+    setCurrentPic(newIndex);
+  };
+
 
   const handleSwipe = (direction) => {
     setAnimation(direction);
@@ -82,33 +106,35 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const transformPetData = (pet) => {
     if (!pet) return null;
 
+    console.log("current pet data: ", pet)
+
     const traits = [];
     if (pet.tags) {
-      if (pet.tags.Breed) traits.push({ icon: "Pets", text: pet.tags.Breed });
-      if (pet.tags.Gender) traits.push({ icon: "Male", text: pet.tags.Gender });
+      if (pet.tags.Breed) traits.push({ icon: Pets, text: pet.tags.Breed });
+      if (pet.tags.Gender && pet.tags.Gender == 'Male') traits.push({ icon: Male, text: pet.tags.Gender });
+      if (pet.tags.Gender && pet.tags.Gender == 'Female') traits.push({ icon: Female, text: pet.tags.Gender });
       if (pet.tags.Age)
-        traits.push({ icon: "Cake", text: pet.tags.Age.split("-")[0].trim() });
+        traits.push({ icon: Cake, text: pet.tags.Age.split("-")[0].trim() });
       if (pet.tags.Weight)
-        traits.push({ icon: "Scale", text: pet.tags.Weight });
+        traits.push({ icon: Scale, text: pet.tags.Weight });
       if (pet.tags.Color)
-        traits.push({ icon: "Palette", text: pet.tags.Color });
+        traits.push({ icon: Palette, text: pet.tags.Color });
       if (pet.tags["Good with Kids"]) {
-        traits.push({ icon: "ChildCare", text: pet.tags["Good with Kids"] });
+        traits.push({ icon: ChildCare, text: pet.tags["Good with Kids"] });
       }
     }
 
-    let imageUrl = defaultImage;
-    if (pet.images && pet.images.length > 0 && pet.images[0]) {
-      imageUrl = pet.images[0].startsWith("http")
-        ? pet.images[0]
-        : `${pet.images[0]}`;
-    }
+    const images = pet.images && pet.images.length > 0
+    ? pet.images.map((img) =>
+        img.startsWith("http") ? img : `${img}`
+      )
+    : [defaultImage];
 
     return {
       id: pet.id,
       name: pet.name || "Unknown",
       age: pet.tags?.Age ? pet.tags.Age.split("(")[0].trim() : "Unknown",
-      image: imageUrl,
+      images,
       traits,
       summary: pet.tags?.["Energy Level"]
         ? `${pet.name} is ${pet.tags["Energy Level"].toLowerCase()}. ${
@@ -122,19 +148,22 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
 
   useEffect(() => {
     setCurrentPet(transformPetData(petsQueue[index]));
+    console.log("JSON: " + JSON.stringify(currentPet));
+    // Reset current picture index when moving to a new pet
+    setCurrentPic(0);
   }, [index]);
 
   return (
     <Card
       sx={{
         width: "100%",
-        height: "550px",
+        height: "650px", 
         bgcolor: "#FFFFFF",
         borderRadius: "16px",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between", // Maintain spacing between sections
+        justifyContent: "space-between", 
         transition:
           animation === "swipe-left" || animation === "swipe-right"
             ? "transform 0.4s ease, opacity 0.2s ease"
@@ -150,14 +179,57 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       }}
     >
       {/* Pet Image Section */}
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{ position: "relative", height: "400px" }}> 
         <CardMedia
           component="img"
-          height="300"
-          image={currentPet.image}
+          image={(currentPet.images != undefined) ? currentPet.images[currentPic] : currentPet.image}
           alt={currentPet.name}
-          sx={{ objectFit: "cover" }}
+          onError={(e) => {
+            console.error(`Failed to load image at index ${currentPic}:`, e);
+            // Set fallback image
+            e.target.src = defaultImage;
+          }}
+          sx={{ 
+            objectFit: "contain",
+            backgroundColor: "#000000",
+            height: "100%", 
+            width: "100%"   
+          }}
         />
+
+        {/* Only show navigation arrows if there is more than one image */}
+        {numpics > 1 && (
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
+            }}
+          >
+            <IconButton 
+              onClick={prevPic}
+              sx={{ 
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+              }}
+            >
+              <NavigateBefore />
+            </IconButton>
+            <IconButton 
+              onClick={nextPic}
+              sx={{ 
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.8)' }
+              }}
+            >
+              <NavigateNext />
+            </IconButton>
+          </Box>
+        )}
+        
         <Box
           sx={{
             position: "absolute",
@@ -167,11 +239,19 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
             bgcolor: "rgba(76, 175, 80, 0.9)",
             color: "white",
             padding: "8px 16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
           }}
         >
           <Typography variant="h6" component="span">
             {currentPet.name}
           </Typography>
+          {numpics > 1 && (
+            <Typography variant="body2">
+              {currentPic + 1} / {numpics}
+            </Typography>
+          )}
         </Box>
       </Box>
 
@@ -180,7 +260,8 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
         <Grid container spacing={1} sx={{ mb: 2 }}>
           {Array.isArray(currentPet.traits) &&
             currentPet.traits.map((trait, index) => {
-              const IconComponent = iconMap[trait.icon] || Pets;
+              console.log("current trait:" , trait)
+              const IconComponent = trait.icon || Pets;
               return (
                 <Grid item key={index}>
                   <Chip
@@ -203,7 +284,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
           display: "flex",
           justifyContent: "space-between",
           padding: "16px",
-          borderTop: "1px solid #e0e0e0", // Optional separator
+          borderTop: "1px solid #e0e0e0", 
         }}
       >
         <Button

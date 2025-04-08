@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,82 +11,90 @@ import {
   ListItemIcon,
   ListItemText,
   ListItemButton,
-} from '@mui/material';
-import { 
-  Favorite, 
+} from "@mui/material";
+import {
+  Favorite,
   Menu as MenuIcon,
   Pets,
   Settings,
   BookmarkBorder,
   ChevronRight,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 
 const Navbar = ({ title }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
       return;
     }
     setDrawerOpen(open);
   };
 
   const menuItems = [
-    { text: 'Search Pets', icon: <Pets />, href: '/tinder-page' },
-    { text: 'Preferences', icon: <Settings />, href: '/PreferencePage' },
-    { text: 'Saved Pets', icon: <BookmarkBorder />, href: '/SavedPets' },
+    { text: "Search Pets", icon: <Pets />, href: "/tinder-page" },
+    { text: "Preferences", icon: <Settings />, href: "/PreferencePage" },
+    { text: "Saved Pets", icon: <BookmarkBorder />, href: "/SavedPets" },
   ];
 
   return (
     <>
-      <AppBar position="static" sx={{ bgcolor: '#40a824', height: '80px', justifyContent: 'center' }}>
-        <Toolbar sx={{ padding: '0 !important' }}>
-          <Box 
-            component="img" 
-            src="/logo.png" 
-            alt="Logo" 
-            sx={{ 
-              height: '80px',
-              marginLeft: 0
-            }} 
+      <AppBar
+        position="static"
+        sx={{ bgcolor: "#40a824", height: "80px", justifyContent: "center" }}
+      >
+        <Toolbar sx={{ padding: "0 !important" }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Logo"
+            sx={{
+              height: "80px",
+              marginLeft: 0,
+            }}
           />
-          <Typography 
-            variant="h4" 
-            component="div" 
-            sx={{ 
-              flexGrow: 1, 
-              textAlign: 'center', 
-              fontWeight: 'bold',
-              ml: -7.5 
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{
+              flexGrow: 1,
+              textAlign: "center",
+              fontWeight: "bold",
+              ml: -7.5,
             }}
           >
             {title}
           </Typography>
-          <IconButton 
-            color="inherit" 
-            onClick={() => { window.location.href = '/SavedPets'; }}
-            sx={{ 
-              '& .MuiSvgIcon-root': { 
-                fontSize: '3rem',
-                '&:hover': {
-                  color: 'rgb(219, 240, 219)'
-                }
-              }
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              window.location.href = "/SavedPets";
+            }}
+            sx={{
+              "& .MuiSvgIcon-root": {
+                fontSize: "3rem",
+                "&:hover": {
+                  color: "rgb(219, 240, 219)",
+                },
+              },
             }}
           >
             <Favorite />
           </IconButton>
-          <IconButton 
+          <IconButton
             color="inherit"
             onClick={toggleDrawer(true)}
-            sx={{ 
-              '& .MuiSvgIcon-root': { 
-                fontSize: '3rem',
-                '&:hover': {
-                  color: 'rgb(219, 240, 219)'
-                }
+            sx={{
+              "& .MuiSvgIcon-root": {
+                fontSize: "3rem",
+                "&:hover": {
+                  color: "rgb(219, 240, 219)",
+                },
               },
-              marginRight: '8px'
+              marginRight: "8px",
             }}
           >
             <MenuIcon />
@@ -99,39 +107,39 @@ const Navbar = ({ title }) => {
         open={drawerOpen}
         onClose={toggleDrawer(false)}
         sx={{
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: 280,
-            bgcolor: '#40a824',
-            color: 'white',
+            bgcolor: "#40a824",
+            color: "white",
           },
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
+            display: "flex",
+            justifyContent: "flex-end",
             p: 1,
           }}
         >
-          <IconButton 
+          <IconButton
             onClick={toggleDrawer(false)}
-            sx={{ 
-              color: 'white',
-              '&:hover': {
-                color: 'rgb(219, 240, 219)'
-              }
+            sx={{
+              color: "white",
+              "&:hover": {
+                color: "rgb(219, 240, 219)",
+              },
             }}
           >
-            <ChevronRight sx={{ fontSize: '2rem' }} />
+            <ChevronRight sx={{ fontSize: "2rem" }} />
           </IconButton>
         </Box>
         <List sx={{ pt: 0 }}>
           {menuItems.map((item) => (
-            <ListItem 
-              key={item.text} 
+            <ListItem
+              key={item.text}
               disablePadding
               sx={{
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
               }}
             >
               <ListItemButton
@@ -139,19 +147,19 @@ const Navbar = ({ title }) => {
                 href={item.href}
                 sx={{
                   py: 2,
-                  '&:hover': {
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  "&:hover": {
+                    bgcolor: "rgba(255, 255, 255, 0.1)",
                   },
                 }}
               >
-                <ListItemIcon sx={{ color: 'white', minWidth: 45 }}>
+                <ListItemIcon sx={{ color: "white", minWidth: 45 }}>
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText 
-                  primary={item.text} 
+                <ListItemText
+                  primary={item.text}
                   sx={{
-                    '& .MuiListItemText-primary': {
-                      fontSize: '1.1rem',
+                    "& .MuiListItemText-primary": {
+                      fontSize: "1.1rem",
                     },
                   }}
                 />
