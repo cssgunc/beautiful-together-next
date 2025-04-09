@@ -17,6 +17,7 @@ SUPABASE_KEY = os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
 
 # The table that is edited
 table_to_update = 'Available Animals'
+# table_to_update = 'testing'
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -69,8 +70,7 @@ def get_images(url):
     soup = BeautifulSoup(response.text, 'html.parser')
     img_list = []
     # TESTING PURPOSES
-    cropped = True
-    
+
     # Find all images for the cat on its page
     # Note: not sure why, but the class here is also dogPics
     for img in soup.find_all('a', class_='dogPics'):
@@ -80,15 +80,27 @@ def get_images(url):
         if img_url.startswith('/'):
             img_url = url + img_url
 
-        # If cropped, then get the 300x300px version.
-        if cropped:
-            img_url_arr = img_url.split('.')
-            img_url_arr[-2] = re.sub('-(scaled|rotated)$', '', img_url_arr[-2])
-            img_url_arr[-2] += "-300x300"
-            img_url = ".".join(img_url_arr)
-        
-        # Append image link
+       
         img_list.append(img_url)
+
+        img_url_arr = img_url.split('.')
+        img_url_arr[-2] = re.sub('-(scaled|rotated|200x200|300x300)$', '', img_url_arr[-2])
+        
+        base = '.'.join(img_url_arr[:-1])
+        ext = img_url_arr[-1]
+
+    
+
+        img_300 = f"{base}-300x300.{ext}"
+        img_200 = f"{base}-200x200.{ext}"
+        if requests.head(img_300).status_code == 200:
+            img_list.append(img_300)
+        elif requests.head(img_200).status_code == 200:
+            img_list.append(img_200)
+        else:
+            img_list.append(img_url)
+
+        
     
     return img_list
 
