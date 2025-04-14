@@ -59,7 +59,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
 
   // Handle logic for picture carousel 
   const[currentPic, setCurrentPic] = useState(0);
-  const numpics = currentPet.images != undefined ? currentPet.images.length : 1
+  const numpics = currentPet?.images?.length ?? 1;
 
   const prevPic = () => {
     const newIndex = (currentPic - 1 + numpics) % numpics;
@@ -90,7 +90,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   };
 
   const handleAdopt = () => {
-    if (index + 1 < petsQueue.length) {
+    if (index < petsQueue.length) {
       adoptNotification(petsQueue[index].name);
       saveAnimal(petsQueue[index].id);
       setIndex(index + 1);
@@ -98,7 +98,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   };
 
   const handlePass = () => {
-    if (index + 1 < petsQueue.length) {
+    if (index < petsQueue.length) {
       setIndex(index + 1);
     }
   };
@@ -130,6 +130,8 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       )
     : [defaultImage];
 
+
+
     return {
       id: pet.id,
       name: pet.name || "Unknown",
@@ -146,12 +148,53 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
     };
   };
 
+  const isQueueExhausted = index >= petsQueue.length;
+  const transformedPet = isQueueExhausted ? null : transformPetData(petsQueue[index]);
+  const restartPets = () => {
+    setIndex(0);
+  }  
+
   useEffect(() => {
     setCurrentPet(transformPetData(petsQueue[index]));
     console.log("JSON: " + JSON.stringify(currentPet));
     // Reset current picture index when moving to a new pet
     setCurrentPic(0);
-  }, [index]);
+  }, [index, petsQueue]);
+
+  if (isQueueExhausted) {
+    return (
+      <Card
+        sx={{
+          width: "100%",
+          height: "650px",
+          bgcolor: "#f8f8f8",
+          borderRadius: "16px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          px: 4,
+        }}
+      >
+        <Box>
+          <Typography variant="h5" gutterBottom>
+            You’ve run out of pets!
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Adjust your preferences or come back later if you want to see more.
+          </Typography>
+          <Button
+          variant="contained"
+          color="primary"
+          onClick={restartPets}
+          sx={{ mt: 4 }}
+        >
+          See Pets Again
+        </Button>
+        </Box>
+      </Card>
+    );
+  }
 
   return (
     <Card
@@ -182,8 +225,8 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       <Box sx={{ position: "relative", height: "400px" }}> 
         <CardMedia
           component="img"
-          image={(currentPet.images != undefined) ? currentPet.images[currentPic] : currentPet.image}
-          alt={currentPet.name}
+          image={currentPet?.images?.[currentPic] ?? defaultImage}
+          alt={currentPet?.name}
           onError={(e) => {
             console.error(`Failed to load image at index ${currentPic}:`, e);
             // Set fallback image
@@ -245,7 +288,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
           }}
         >
           <Typography variant="h6" component="span">
-            {currentPet.name}
+            {currentPet?.name}
           </Typography>
           {numpics > 1 && (
             <Typography variant="body2">
@@ -258,7 +301,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       {/* Card Content Section */}
       <CardContent sx={{ flex: 1, overflow: "hidden" }}>
         <Grid container spacing={1} sx={{ mb: 2 }}>
-          {Array.isArray(currentPet.traits) &&
+          {Array.isArray(currentPet?.traits) &&
             currentPet.traits.map((trait, index) => {
               console.log("current trait:" , trait)
               const IconComponent = trait.icon || Pets;
@@ -274,7 +317,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
             })}
         </Grid>
         <Typography variant="body2" color="text.secondary">
-          {currentPet.summary}
+          {currentPet?.summary}
         </Typography>
       </CardContent>
 
