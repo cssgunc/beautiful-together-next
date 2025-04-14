@@ -157,7 +157,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
     <Card
       sx={{
         width: "100%",
-        height: "650px", 
+        height: "83vh", 
         bgcolor: "#FFFFFF",
         borderRadius: "16px",
         overflow: "hidden",
