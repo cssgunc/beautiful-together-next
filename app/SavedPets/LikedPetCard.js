@@ -34,6 +34,8 @@ export const LikedPetCard = ({ pet, children }) => {
         overflow: "hidden",
         boxShadow: 3,
         position: "relative", // Allow positioning of the "X" button inside the card
+        display: "flex", 
+        flexDirection: "column"
       }}
     >
       <Box sx={{ position: "relative" }}>
@@ -91,49 +93,62 @@ export const LikedPetCard = ({ pet, children }) => {
         </Box>
       </Box>
 
-      <CardContent>{children}</CardContent>
-
-      <Box
+      <Box // this item
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          p: 2,
-          gap: 2,
+          padding: "8px 16px",
+          display: "flex",        
+          flexDirection: "column",
+          height: "100%"
         }}
       >
-        <Button
-          component="a"
-          href={pet.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="contained"
-          color="secondary"
-          fullWidth
+        <CardContent
+          sx={{ flexGrow: 1 }}
+        >{children}</CardContent>
+
+        <Box
           sx={{
-            borderRadius: 2,
-            textTransform: "none",
-            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            p: 2,
+            gap: 2
           }}
         >
-          More Information
-        </Button>
-        <Button
-          component="a"
-          href={`https://beautifultogethersanctuary.com/${pet["dog/cat"]}-adoption/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{
-            borderRadius: 2,
-            textTransform: "none",
-            color: "white",
-          }}
-        >
-          Adopt {pet.name}!
-        </Button>
+          <Button
+            component="a"
+            href={pet.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="contained"
+            color="secondary"
+            fullWidth
+            sx={{
+              borderRadius: 2,
+              textTransform: "none",
+              color: "white",
+            }}
+          >
+            More Information
+          </Button>
+          <Button
+            component="a"
+            href={`https://beautifultogethersanctuary.com/${pet["dog/cat"]}-adoption/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{
+              borderRadius: 2,
+              textTransform: "none",
+              color: "white",
+            }}
+          >
+            Adopt {pet.name}!
+          </Button>
+        </Box>
       </Box>
+
+      
     </Card>
   );
 };
