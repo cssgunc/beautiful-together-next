@@ -41,7 +41,7 @@ export const LikedPetCard = ({ pet, children }) => {
       <Box sx={{ position: "relative" }}>
         <CardMedia
           component="img"
-          height="300"
+          height="400"
           image={pet.images != undefined ? pet.images[currentPic] : pet.images}
           alt={pet.name}
           sx={{ objectFit: "cover" }}
