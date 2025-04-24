@@ -55,7 +55,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
   const [currentPet, setCurrentPet] = useState(petsQueue[0]);
   const [animation, setAnimation] = useState(""); // Track animation type
   const [index, setIndex] = useState(0);
-
+  const [expanded, setExpanded] = useState(false); // Track if description is expanded
 
   // Handle logic for picture carousel 
   const[currentPic, setCurrentPic] = useState(0);
@@ -75,6 +75,9 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
     setCurrentPic(newIndex);
   };
 
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
 
   const handleSwipe = (direction) => {
     setAnimation(direction);
@@ -130,7 +133,26 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       )
     : [defaultImage];
 
-
+    // Create a more detailed description for the pet
+    const detailedSummary = pet.tags?.["Energy Level"]
+      ? `${pet.name} is ${pet.tags["Energy Level"].toLowerCase()}. ${
+          pet.tags.Breed ? `This lovely ${pet.tags.Breed}` : "This pet"
+        } is looking for a forever home! ${
+          pet.tags["Good with Kids"] ? `${pet.name} is ${pet.tags["Good with Kids"].toLowerCase()} with kids. ` : ""
+        }${
+          pet.tags["Good with Dogs"] ? `${pet.name} is ${pet.tags["Good with Dogs"].toLowerCase()} with dogs. ` : ""
+        }${
+          pet.tags["Good with Cats"] ? `${pet.name} is ${pet.tags["Good with Cats"].toLowerCase()} with cats. ` : ""
+        }${
+          pet.tags["Litterbox Trained"] ? `${pet.name} is ${pet.tags["Litterbox Trained"].toLowerCase()} litterbox trained. ` : ""
+        }`
+      : `Meet ${pet.name}! A lovely ${
+          pet.tags?.Breed || "pet"
+        } looking for a forever home. ${
+          pet.tags?.Age ? `${pet.name} is ${pet.tags.Age.toLowerCase()} old. ` : ""
+        }${
+          pet.tags?.Color ? `${pet.name} has a beautiful ${pet.tags.Color.toLowerCase()} coat. ` : ""
+        }Come meet this wonderful pet today and see if you're the perfect match for each other!`;
 
     return {
       id: pet.id,
@@ -138,13 +160,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       age: pet.tags?.Age ? pet.tags.Age.split("(")[0].trim() : "Unknown",
       images,
       traits,
-      summary: pet.tags?.["Energy Level"]
-        ? `${pet.name} is ${pet.tags["Energy Level"].toLowerCase()}. ${
-            pet.tags.Breed ? `This lovely ${pet.tags.Breed}` : "This pet"
-          } is looking for a forever home!`
-        : `Meet ${pet.name}! A lovely ${
-            pet.tags?.Breed || "pet"
-          } looking for a forever home.`,
+      summary: detailedSummary,
     };
   };
 
@@ -159,7 +175,15 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
     console.log("JSON: " + JSON.stringify(currentPet));
     // Reset current picture index when moving to a new pet
     setCurrentPic(0);
+    // Reset expanded state when moving to a new pet
+    setExpanded(false);
   }, [index, petsQueue]);
+
+  // Function to truncate text with ellipsis
+  const truncateText = (text, maxLength = 100) => {
+    if (!text || text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
 
   if (isQueueExhausted) {
     return (
@@ -178,7 +202,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       >
         <Box>
           <Typography variant="h5" gutterBottom>
-            You’ve run out of pets!
+            You've run out of pets!
           </Typography>
           <Typography variant="body1" color="text.secondary">
             Adjust your preferences or come back later if you want to see more.
@@ -299,7 +323,7 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
       </Box>
 
       {/* Card Content Section */}
-      <CardContent sx={{ flex: 1, overflow: "hidden" }}>
+      <CardContent sx={{ flex: 1, overflow: "auto" }}>
         <Grid container spacing={1} sx={{ mb: 2 }}>
           {Array.isArray(currentPet?.traits) &&
             currentPet.traits.map((trait, index) => {
@@ -316,9 +340,23 @@ const PetCard = ({ petsQueue, adoptNotification }) => {
               );
             })}
         </Grid>
-        <Typography variant="body2" color="text.secondary">
-          {currentPet?.summary}
-        </Typography>
+        
+        {/* Description with Read More functionality */}
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            {expanded ? currentPet?.summary : truncateText(currentPet?.summary, 100)}
+          </Typography>
+          
+          {currentPet?.summary && currentPet.summary.length > 100 && (
+            <Button 
+              onClick={toggleExpanded} 
+              size="small" 
+              sx={{ mt: 1, p: 0, minWidth: 'auto', color: '#4caf50', textTransform: 'none' }}
+            >
+              {expanded ? 'Read Less' : 'Read More'}
+            </Button>
+          )}
+        </Box>
       </CardContent>
 
       {/* Buttons Section */}
