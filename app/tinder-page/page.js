@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PetCard from "./PetCard";
 import { fetchOrderedPets } from "../fetchOrderedPets/fetchOrderedPets";
 import Notification from "./Notification";
 import Navbar from "../navbar/navbar";
 import { getSavedAnimals } from "../savedPetsCookie/savedPetsCookie";
-import cleanSavedAnimalsFromIndexedDB from "../SavedPets/petDataManager";
+import { cleanSavedAnimalsFromIndexedDB } from "../SavedPets/petDataManager";
 
 const theme = createTheme({
   palette: {
@@ -27,6 +27,7 @@ const theme = createTheme({
 export default function Home() {
   const [petsQueue, setPetsQueue] = useState([]); // State to store petsQueue
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function Home() {
         const savedPets = await getSavedAnimals(); // Get saved pets from cookies
         const petsData = await fetchOrderedPets(); // Fetch ordered pets
 
-        await cleanSavedAnimalsFromIndexedDB();
+        await cleanSavedAnimalsFromIndexedDB(petsData);
 
         // Filter out pets that are already saved
         const filteredPets = petsData.filter(
@@ -45,6 +46,9 @@ export default function Home() {
         setPetsQueue(filteredPets); // Update state with filtered pets
       } catch (error) {
         console.error("Error fetching pets data:", error);
+        setError("We couldn't load pets right now. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -70,10 +74,6 @@ export default function Home() {
   const handlePass = () => {
     console.log("Passed on pet");
   };
-
-  useEffect(() => {
-    setLoading(false); // Simulating data load
-  }, []);
 
   if (loading) {
     return (
@@ -104,7 +104,12 @@ export default function Home() {
           <Container maxWidth="sm" sx={{ mt: 4 }}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Box sx={{ width: "90%", maxWidth: "400px" }}>
-                {petsQueue[0] ? (
+                {error ? (
+                  <Box role="alert" sx={{ textAlign: "center", mt: 4, p: 4 }}>
+                    <Typography>{error}</Typography>
+                    <Button onClick={() => window.location.reload()}>Try again</Button>
+                  </Box>
+                ) : petsQueue[0] ? (
                   <div>
                     <PetCard
                       petsQueue={petsQueue}

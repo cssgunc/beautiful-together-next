@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { fetchAnimals } from "../../../utils/animals.mjs";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const { data, error } = await supabase.from("Available Animals").select("*");
-
-  if (error) {
+  try {
+    const animals = await fetchAnimals();
+    return NextResponse.json(animals, {
+      headers: { "Cache-Control": "no-store" },
+    });
+  } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json(
       { error: "Failed to fetch data" },
       { status: 500 },
     );
   }
-
-  return NextResponse.json(data, { status: 200 });
 }

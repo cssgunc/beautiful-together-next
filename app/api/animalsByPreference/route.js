@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { fetchAnimals } from "../../../utils/animals.mjs";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const preferenceTagMap = {
   "Pet Preference": {
@@ -245,18 +242,7 @@ export async function POST(req) {
       );
     }
 
-    const { data: animals, error } = await supabase
-      .from('Available Animals')
-      .select('*');
-
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch animals' }, 
-        { status: 500 }
-      );
-    }
+    const animals = await fetchAnimals();
 
     // Score and sort animals
     const rankedAnimals = animals
@@ -277,7 +263,9 @@ export async function POST(req) {
         return a.score - b.score;
       });
 
-    return NextResponse.json(rankedAnimals, { status: 200 });
+    return NextResponse.json(rankedAnimals, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch (error) {
     console.error('Server error:', error);
     return NextResponse.json(
